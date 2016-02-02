@@ -1,0 +1,17 @@
+{
+    "Message": {
+        "Subject": "Mail received from the O365 iOS Microsoft Graph Connect Sample",
+        "Body": {
+            "ContentType": "<CONTENTTYPE>",
+            "Content": "<CONTENT>"
+        },
+        "ToRecipients": [
+                         {
+                         "EmailAddress": {
+                         "Address": "<EMAIL>"
+                         }
+                         }
+                         ]
+    },
+    "SaveToSentItems": "true"
+}
