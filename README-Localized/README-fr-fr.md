@@ -7,7 +7,7 @@ La connexion à Microsoft Office 365 est la première étape que chaque applicat
 ## Conditions requises
 * [Xcode](https://developer.apple.com/xcode/downloads/) d’Apple
 * Installation de [CocoaPods](https://guides.cocoapods.org/using/using-cocoapods.html) comme gestionnaire de dépendances.
-* Un compte Office 365. Vous pouvez souscrire à &lt;a herf="https://portal.office.com/Signup/Signup.aspx?OfferId=6881A1CB-F4EB-4db3-9F18-388898DAF510&amp;DL=DEVELOPERPACK&amp;ali=1#0"&gt;un abonnement Office 365 Développeur&lt;/a&gt; comprenant les ressources dont vous avez besoin pour commencer à créer des applications Office 365.
+* Un compte Office 365. Vous pouvez souscrire à &lt;a herf="https://profile.microsoft.com/RegSysProfileCenter/wizardnp.aspx?wizid=14b845d0-938c-45af-b061-f798fbb4d170"&gt;un abonnement Office 365 Développeur&lt;/a&gt; comprenant les ressources dont vous avez besoin pour commencer à créer des applications Office 365.
 
      > Remarque : si vous avez déjà un abonnement, le lien précédent vous renvoie vers une page avec le message suivant : « Désolé, vous ne pouvez pas ajouter ceci à votre compte existant ». Dans ce cas, utilisez un compte lié à votre abonnement Office 365 existant.
 * Un client Microsoft Azure pour enregistrer votre application. Microsoft Azure Active Directory (AD) fournit des services d’identité que les applications utilisent à des fins d’authentification et d’autorisation. Un abonnement d’évaluation peut être demandé ici : [Microsoft Azure](https://account.windowsazure.com/SignUp).
