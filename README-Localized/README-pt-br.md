@@ -7,7 +7,7 @@ A primeira etapa para que os aplicativos iOS comecem a funcionar com dados e ser
 ## Pré-requisitos
 * [Xcode](https://developer.apple.com/xcode/downloads/) da Apple
 * A instalação do [CocoaPods](https://guides.cocoapods.org/using/using-cocoapods.html) como um gerenciador de dependências.
-* Uma conta do Office 365. Você pode se inscrever para &lt;a herf="https://profile.microsoft.com/RegSysProfileCenter/wizardnp.aspx?wizid=14b845d0-938c-45af-b061-f798fbb4d170"&gt;uma assinatura do Office 365 Developer&lt;/a&gt;, que inclui os recursos de que você precisa para começar a criar aplicativos do Office 365.
+* Uma conta do Office 365. Você pode se inscrever para [uma assinatura do Office 365 Developer](https://aka.ms/devprogramsignup), que inclui os recursos de que você precisa para começar a criar aplicativos do Office 365.
 
      > Observação: Caso já tenha uma assinatura, o link anterior direciona você para uma página com a mensagem *Não é possível adicioná-la à sua conta atual*. Nesse caso, use uma conta de sua assinatura atual do Office 365.
 * Um locatário do Microsoft Azure para registrar o seu aplicativo. O Microsoft Azure Active Directory (AD) fornece serviços de identidade que os aplicativos usam para autenticação e autorização. Você pode adquirir uma assinatura de avaliação aqui: [Microsoft Azure](https://account.windowsazure.com/SignUp).
