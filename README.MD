@@ -1,11 +1,11 @@
 # Microsoft Office 365 Connect Sample for iOS Using Microsoft Graph (Swift)
 
-Connecting to Microsoft Office 365 is the first step every iOS app must take to start working with Office 365 services and data. This sample shows how to connect and then call one API through Microsoft Graph (previously named Office 365 unified API).
+Connecting to Microsoft Office 365 is the first step every iOS app must take to start working with Office 365 services and data. This sample shows how to connect and then call one API through Microsoft Graph.
 
-> Note: For the Objective-C version of this sample, see [O365-iOS-Microsoft-Graph-Connect](https://github.com/OfficeDev/O365-iOS-Microsoft-Graph-Connect). 
+> Note: For the Objective-C version of this sample, see [O365-iOS-Microsoft-Graph-Connect](https://github.com/microsoftgraph/ios-objectivec-connect-rest-sample). 
  
 ## Prerequisites
-* [Xcode](https://developer.apple.com/xcode/downloads/) from Apple
+* [Xcode](https://developer.apple.com/xcode/downloads/) version 7.3.1 from Apple
 * Installation of [CocoaPods](https://guides.cocoapods.org/using/using-cocoapods.html)  as a dependency manager.
 * An Office 365 account. You can sign up for [an Office 365 Developer subscription](https://aka.ms/devprogramsignup) that includes the resources that you need to start building Office 365 apps.
 
@@ -16,6 +16,7 @@ Connecting to Microsoft Office 365 is the first step every iOS app must take to 
       
 * A client id (application id) and redirect uri values of an application registered in Azure. This sample application must be granted the **Send mail as user** permission for **Microsoft Graph**. To create the registration, see [Grant permissions to the Connect application in Azure](https://github.com/microsoftgraph/ios-swift-connect-rest-sample/wiki/Grant-permissions-to-the-Connect-application-in-Azure).
 
+>**Note:** The sample was tested on Xcode 7.3.1. This sample does not yet support Xcode 8 and iOS10, which uses the Swift 3.0 framework.
 
        
 ## Running this sample in Xcode
@@ -29,7 +30,7 @@ Connecting to Microsoft Office 365 is the first step every iOS app must take to 
         
         pod install
         
-   For more information, see **Using CocoaPods** in [Additional Resources](#AdditionalResources)
+   For more information, see **Using CocoaPods** in [Additional Resources](#additional-resources)
   
 3. Open **O365-iOS-Microsoft-Graph-Connect-Swift.xcworkspace**
 4. Open **AuthenticationConstants.swift**. You'll see that the **ClientID** (application id you received from the registration process in the prerequisites section) and **RedirectUri** values can be added to the top of the file. Supply the necessary values here:
@@ -52,15 +53,15 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 
 ## Questions and comments
 
-We'd love to get your feedback about the Office 365 iOS Microsoft Graph Connect Swift project. You can send your questions and suggestions to us in the [Issues](https://github.com/OfficeDev/O365-iOS-Microsoft-Graph-Connect-Swift/issues) section of this repository.
+We'd love to get your feedback about the Office 365 iOS Microsoft Graph Connect Swift project. You can send your questions and suggestions to us in the [Issues](https://github.com/microsoftgraph/ios-swift-connect-rest-sample/issues) section of this repository.
 
-Questions about Office 365 development in general should be posted to [Stack Overflow](http://stackoverflow.com/questions/tagged/Office365+API). Make sure that your questions or comments are tagged with [Office365] and [MicrosoftGraph].
+Questions about Microsoft Graph development in general should be posted to [Stack Overflow](http://stackoverflow.com/questions/tagged/MicrosoftGraph). Make sure that your questions or comments are tagged with [MicrosoftGraph].
 
 
 ## Additional resources
 
-* [Office Dev Center](http://dev.office.com/)
-* [O365-iOS-Microsoft-Graph-Connect-Obj-C](https://github.com/OfficeDev/O365-iOS-Microsoft-Graph-Connect)
+* [Office Dev Center](https://dev.office.com/)
+* [O365-iOS-Microsoft-Graph-Connect-Obj-C](https://github.com/microsoftgraph/ios-objectivec-connect-rest-sample)
 * [Microsoft Graph overview page](https://graph.microsoft.io)
 * [Using CocoaPods](https://guides.cocoapods.org/using/using-cocoapods.html)
 
