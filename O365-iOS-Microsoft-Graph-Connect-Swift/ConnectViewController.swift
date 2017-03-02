@@ -18,31 +18,31 @@ class ConnectViewController: UIViewController {
     @IBOutlet var connectButton: UIButton!
 
     // Actions
-    @IBAction func connect(sender: AnyObject) {
+    @IBAction func connect(_ sender: AnyObject) {
         
         AuthenticationManager.sharedInstance?.acquireAuthToken ({
             (result: AuthenticationResult) -> Void in
             
             switch result {
-            case .Success:
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    self.performSegueWithIdentifier("sendMail", sender: self)
+            case .success:
+                DispatchQueue.main.async(execute: { () -> Void in
+                    self.performSegue(withIdentifier: "sendMail", sender: self)
                 })
                 
-            case .Failure(let error):
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    let alertController = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .Alert)
-                    alertController.addAction(UIAlertAction(title: "Close", style: .Cancel, handler: nil))
-                    self.presentViewController(alertController, animated: true, completion: nil)
+            case .failure(let error):
+                DispatchQueue.main.async(execute: { () -> Void in
+                    let alertController = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+                    alertController.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))
+                    self.present(alertController, animated: true, completion: nil)
                 })
             }
         })
     }
 
     // Navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "sendMail" {
-            let vc: SendMailViewController = segue.destinationViewController as! SendMailViewController
+            let vc: SendMailViewController = segue.destination as! SendMailViewController
             vc.userEmailAddress = AuthenticationManager.sharedInstance?.userInformation?.userId
         }
     }

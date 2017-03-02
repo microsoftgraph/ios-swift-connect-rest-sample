@@ -10,8 +10,8 @@ import Foundation
 
 struct AuthenticationConstants {
 
-    static let ClientId    = "ENTER_CLIENT_ID_HERE"
-    static let RedirectUri = NSURL.init(string: "ENTER_REDIRECT_URI_HERE")
+    static let ClientId    = "27583ca3-6297-4e3b-a656-4d4eae95ba7d"
+    static let RedirectUri = URL.init(string: "urn:ietf:wg:oauth:2.0:oob")
     static let Authority   = "https://login.microsoftonline.com/common"
     static let ResourceId  = "https://graph.microsoft.com"
 

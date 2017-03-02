@@ -28,7 +28,7 @@ class SendMailViewController : UIViewController {
     var userEmailAddress: String!
     
     // MARK: ViewController methods
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationItem.hidesBackButton = true
     }
@@ -38,13 +38,13 @@ class SendMailViewController : UIViewController {
         
         self.emailTextField.text = self.userEmailAddress
         
-        let idx = self.userEmailAddress.characters.indexOf("@")
-        self.headerLabel.text = "Hi, \(self.userEmailAddress.substringToIndex(idx!) )"
+        let idx = self.userEmailAddress.characters.index(of: "@")
+        self.headerLabel.text = "Hi, \(self.userEmailAddress.substring(to: idx!) )"
         
     }
     
     // MARK: IBActions
-    @IBAction func sendMail(sender: AnyObject) {
+    @IBAction func sendMail(_ sender: AnyObject) {
         // Fetch content from file
         updateUI(showActivityIndicator: true, statusText: "Sending")
         
@@ -57,9 +57,9 @@ class SendMailViewController : UIViewController {
         }
     }
     
-    @IBAction func disconnect(sender: AnyObject) {
+    @IBAction func disconnect(_ sender: AnyObject) {
         AuthenticationManager.sharedInstance!.clearCredentials()
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
     }
     
     
@@ -69,23 +69,23 @@ class SendMailViewController : UIViewController {
      Prepare mail content by loading the files from resources and replacing placeholders with the
      HTML body.
      */
-    func mailContent() -> NSData? {
+    func mailContent() -> Data? {
         
-        if let emailFilePath = NSBundle.mainBundle().pathForResource("EmailPostContent", ofType: "json"),
-            emailBodyFilePath = NSBundle.mainBundle().pathForResource("EmailBody", ofType: "html")
+        if let emailFilePath = Bundle.main.path(forResource: "EmailPostContent", ofType: "json"),
+            let emailBodyFilePath = Bundle.main.path(forResource: "EmailBody", ofType: "html")
         {
             do {
                 // Prepare upload content
-                let emailContent = try String(contentsOfFile: emailFilePath, encoding: NSUTF8StringEncoding)
-                let emailBodyRaw = try String(contentsOfFile: emailBodyFilePath, encoding: NSUTF8StringEncoding)
+                let emailContent = try String(contentsOfFile: emailFilePath, encoding: String.Encoding.utf8)
+                let emailBodyRaw = try String(contentsOfFile: emailBodyFilePath, encoding: String.Encoding.utf8)
                 // Request doesn't accept a single quotation mark("), so change it to the acceptable form (\")
-                let emailValidBody = emailBodyRaw.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
+                let emailValidBody = emailBodyRaw.replacingOccurrences(of: "\"", with: "\\\"")
                 
-                let emailPostContent = emailContent.stringByReplacingOccurrencesOfString("<EMAIL>", withString: self.emailTextField.text!)
-                    .stringByReplacingOccurrencesOfString("<CONTENTTYPE>", withString: "HTML")
-                    .stringByReplacingOccurrencesOfString("<CONTENT>", withString: emailValidBody)
+                let emailPostContent = emailContent.replacingOccurrences(of: "<EMAIL>", with: self.emailTextField.text!)
+                    .replacingOccurrences(of: "<CONTENTTYPE>", with: "HTML")
+                    .replacingOccurrences(of: "<CONTENT>", with: emailValidBody)
                 
-                return emailPostContent.dataUsingEncoding(NSUTF8StringEncoding)
+                return emailPostContent.data(using: String.Encoding.utf8)
             }
             catch {
                 // Error handling in case file loading fails.
@@ -96,7 +96,8 @@ class SendMailViewController : UIViewController {
         return nil
     }
     
-    func sendMailRestWithContent(content: NSData) {
+    func sendMailRestWithContent(_ content: Data) {
+        
         // Acquire an access token, if logged in already, this shouldn't bring up an authentication window.
         // However, if the token is expired, user will be asked to sign in again.
         AuthenticationManager.sharedInstance!.acquireAuthToken {
@@ -104,75 +105,76 @@ class SendMailViewController : UIViewController {
             
             switch result {
 
-            case .Success:
+            case .success:
                 // Upon success, send mail.
-                let request = NSMutableURLRequest(URL: NSURL(string: "https://graph.microsoft.com/v1.0/me/microsoft.graph.sendmail")!)
-                request.HTTPMethod = "POST"
+                let request = NSMutableURLRequest(url: URL(string: "https://graph.microsoft.com/v1.0/me/microsoft.graph.sendmail")!)
+                request.httpMethod = "POST"
                 request.setValue("application/json", forHTTPHeaderField: "Content-Type")
                 request.setValue("application/json, text/plain, */*", forHTTPHeaderField: "Accept")
                 
                 request.setValue("Bearer \(AuthenticationManager.sharedInstance!.accessToken!)", forHTTPHeaderField: "Authorization")
                 
-                request.HTTPBody = content
+                request.httpBody = content
                 
-                let task = NSURLSession.sharedSession().dataTaskWithRequest(request, completionHandler:
-                    {
-                        (data, response, error) -> Void in
 
-                        if let _ = error {
-                            print(error)
-                            self.updateUI(showActivityIndicator: false, statusText: self.failureString)
-                            return
-                        }
-
-                        let statusCode = (response as! NSHTTPURLResponse).statusCode
-                        
-                        if statusCode == 202 {
-                            self.updateUI(showActivityIndicator: false, statusText: self.successString)
-                        }
-                        else {
-                            print("response: \(response)")
-                            print(String(data: data!, encoding: NSUTF8StringEncoding))
-                            self.updateUI(showActivityIndicator: false, statusText: self.failureString)
-                        }
+                
+                let task = URLSession.shared.dataTask(with:request as URLRequest, completionHandler: {
+                    (data, response, error) in
+                    
+                    if let _ = error {
+                        print(error as Any )
+                        self.updateUI(showActivityIndicator: false, statusText: self.failureString)
+                        return
+                    }
+                    
+                    let statusCode = (response as! HTTPURLResponse).statusCode
+                    
+                    if statusCode == 202 {
+                        self.updateUI(showActivityIndicator: false, statusText: self.successString)
+                    }
+                    else {
+                        print("response: \(response)")
+                        print(String(data: data!, encoding: String.Encoding.utf8) as Any )
+                        self.updateUI(showActivityIndicator: false, statusText: self.failureString)
+                    }
                 })
                 
                 task.resume()
             
-            case .Failure(let error):
+            case .failure(let error):
                 // Upon failure, alert and go back.
                 print(error)
 
-                let alertController = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .Alert)
-                alertController.addAction(UIAlertAction(title: "Close", style: .Destructive, handler: {
+                let alertController = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+                alertController.addAction(UIAlertAction(title: "Close", style: .destructive, handler: {
                     (action) -> Void in
                     AuthenticationManager.sharedInstance?.clearCredentials()
-                    self.navigationController!.popViewControllerAnimated(true)
+                    self.navigationController!.popViewController(animated: true)
                 }))
                 
-                self.presentViewController(alertController, animated: true, completion: nil)
+                self.present(alertController, animated: true, completion: nil)
             
                 
             }
         }
     }
     
-    func updateUI(showActivityIndicator showActivityIndicator: Bool,
+    func updateUI(showActivityIndicator: Bool,
         statusText: String? = nil) {
             if showActivityIndicator {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    self.sendMailButton.enabled = false
+                DispatchQueue.main.async(execute: { () -> Void in
+                    self.sendMailButton.isEnabled = false
                     self.activityIndicator.startAnimating()
                 })
             }
             else {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    self.sendMailButton.enabled = true
+                DispatchQueue.main.async(execute: { () -> Void in
+                    self.sendMailButton.isEnabled = true
                     self.activityIndicator.stopAnimating()
                 })
             }
             if let _ = statusText {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                DispatchQueue.main.async(execute: { () -> Void in
                     self.statusTextView.text = statusText
                 })
             }

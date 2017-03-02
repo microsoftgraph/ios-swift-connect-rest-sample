@@ -6,8 +6,8 @@
 import Foundation
 
 enum AuthenticationResult {
-    case Success
-    case Failure(ADAuthenticationError)
+    case success
+    case failure(ADAuthenticationError)
 }
 
 
@@ -28,7 +28,7 @@ class AuthenticationManager {
     var userInformation: ADUserInformation?
     
     // Private properties
-    private let context: ADAuthenticationContext!
+    fileprivate let context: ADAuthenticationContext!
 
     // MARK: Initializer
     init?() {
@@ -43,33 +43,32 @@ class AuthenticationManager {
     
     // MARK: Authentication methods
     //Acquire and store access token and user information.
-    func acquireAuthToken(completion: ((AuthenticationResult) -> Void)?) {
-        self.context.acquireTokenWithResource(AuthenticationConstants.ResourceId,
-            clientId: AuthenticationConstants.ClientId,
-            redirectUri: AuthenticationConstants.RedirectUri,
-            completionBlock:{
-            (result:ADAuthenticationResult!) -> Void in
-                
-                if let handler = completion {
-                    if result.status == AD_SUCCEEDED {
-                        self.accessToken = result.accessToken
-                        self.userInformation = result.tokenCacheStoreItem.userInformation
-                        
-                        handler(AuthenticationResult.Success)
-                    }
-                    else {
-                        handler(AuthenticationResult.Failure(result.error))
-                    }
-                }
+    func acquireAuthToken(_ completion: ((AuthenticationResult) -> Void)?) {
+        self.context.acquireToken(withResource: AuthenticationConstants.ResourceId,
+                                              clientId: AuthenticationConstants.ClientId,
+                                              redirectUri: AuthenticationConstants.RedirectUri,
+                                              completionBlock:{
+                                                (result:ADAuthenticationResult?) in
+                                                
+                                                if let handler = completion {
+                                                    if result?.status == AD_SUCCEEDED {
+                                                        self.accessToken = result?.accessToken
+                                                        self.userInformation = result?.tokenCacheStoreItem.userInformation
+                                                        
+                                                        handler(AuthenticationResult.success)
+                                                    }
+                                                    else {
+                                                        handler(AuthenticationResult.failure((result?.error)!))
+                                                    }
+                                                }
         })
     }
-    
     
     //Clears the ADAL token cache and the cookie cache.
     func clearCredentials() {
         // Remove all the cookies from this application's sandbox. The authorization code is stored in the
         // cookies and ADAL will try to get to access tokens based on the auth code in the cookie.
-        let cookieStore = NSHTTPCookieStorage.sharedHTTPCookieStorage()
+        let cookieStore = HTTPCookieStorage.shared
         if let cookies = cookieStore.cookies {
             for cookie in cookies {
                 cookieStore.deleteCookie(cookie)
@@ -79,7 +78,7 @@ class AuthenticationManager {
         var error: ADAuthenticationError?
         context.tokenCacheStore.removeAllWithError(&error)
         if let _ = error {
-            print(error)
+            print(error )
         }
     }
 
