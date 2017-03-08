@@ -5,7 +5,7 @@ Connecting to Microsoft Office 365 is the first step every iOS app must take to 
 > Note: For the Objective-C version of this sample, see [O365-iOS-Microsoft-Graph-Connect](https://github.com/microsoftgraph/ios-objectivec-connect-rest-sample). 
  
 ## Prerequisites
-* [Xcode](https://developer.apple.com/xcode/downloads/) version 7.3.1 from Apple
+* [Xcode](https://developer.apple.com/xcode/downloads/) version 8.2.1 from Apple
 * Installation of [CocoaPods](https://guides.cocoapods.org/using/using-cocoapods.html)  as a dependency manager.
 * An Office 365 account. You can sign up for [an Office 365 Developer subscription](https://aka.ms/devprogramsignup) that includes the resources that you need to start building Office 365 apps.
 
@@ -16,7 +16,7 @@ Connecting to Microsoft Office 365 is the first step every iOS app must take to 
       
 * A client id (application id) and redirect uri values of an application registered in Azure. This sample application must be granted the **Send mail as user** permission for **Microsoft Graph**. To create the registration, see [Grant permissions to the Connect application in Azure](https://github.com/microsoftgraph/ios-swift-connect-rest-sample/wiki/Grant-permissions-to-the-Connect-application-in-Azure).
 
->**Note:** The sample was tested on Xcode 7.3.1. This sample does not yet support Xcode 8 and iOS10, which uses the Swift 3.0 framework.
+>**Note:** The sample was tested on Xcode 8.2.1. This sample supports Xcode 8 and iOS10, which uses the Swift 3.0 framework.
 
        
 ## Running this sample in Xcode
@@ -24,7 +24,7 @@ Connecting to Microsoft Office 365 is the first step every iOS app must take to 
 1. Clone this repository
 2. Use CocoaPods to import the Active Directory Authentication Library (ADAL) iOS dependency:
         
-	     pod 'ADALiOS', '= 1.2.4'
+	     pod 'ADALiOS', '= 1.2.5'
 
  This sample app already contains a podfile that will get the ADAL components (pods) into  the project. Simply navigate to the project root, from **Terminal** and run: 
         
