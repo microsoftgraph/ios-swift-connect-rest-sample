@@ -10,7 +10,7 @@ Connecting to Microsoft Office 365 is the first step every iOS app must take to 
 * An Office 365 account. You can sign up for [an Office 365 Developer subscription](https://aka.ms/devprogramsignup) that includes the resources that you need to start building Office 365 apps.
 
      > Note: If you already have a subscription, the previous link sends you to a page with the message *Sorry, you can’t add that to your current account*. In that case, use an account from your current Office 365 subscription.Mic      
-* A client id (application id) and redirect uri values of an application registered in Azure. This sample application must be granted the **Send mail as a user** permission for **Microsoft Graph**. To create the registration, see [Grant permissions to the Connect application in Azure](https://github.com/microsoftgraph/ios-swift-connect-rest-sample/wiki/Grant-permissions-to-the-Connect-application-in-Azure).
+* A client id (application id) of an application registered in Azure. This sample application must be granted the **Send mail as a user** permission for **Microsoft Graph**. To create the registration, see [Grant permissions to the Connect application in Azure](https://github.com/microsoftgraph/ios-swift-connect-rest-sample/wiki/Grant-permissions-to-the-Connect-application-in-Azure).
 
 >**Note:** The sample was tested on Xcode 8.2.1. This sample supports Xcode 8 and iOS10, which uses the Swift 3.0 framework.
 
@@ -29,9 +29,9 @@ Connecting to Microsoft Office 365 is the first step every iOS app must take to 
    For more information, see **Using CocoaPods** in [Additional Resources](#additional-resources).
   
 3. Open **O365-iOS-Microsoft-Graph-Connect-Swift.xcworkspace**
-4. Open **AuthenticationConstants.swift**. You'll see that the **ClientID** (application id you received from the registration process in the prerequisites section) and **RedirectUri** values can be added to the top of the file. Supply the necessary values here:
+4. Open **AuthenticationConstants.swift**. You'll see that the **ClientID** (application id you received from the registration process in the prerequisites section) can be added to the top of the file. Supply the necessary value here:
 
-        // You will set your application's clientId and redirect URI.
+        // You will set your application's clientId.
     	static let ClientId = "ENTER_YOUR_CLIENT_ID"
     	static let RedirectUri = URL.init(string: "urn:ietf:wg:oauth:2.0:oob")
     	static let Authority = "https://login.microsoftonline.com/common"
@@ -58,9 +58,9 @@ Questions about Microsoft Graph development in general should be posted to [Stac
 
 * [Office Dev Center](https://dev.office.com/)
 * [O365-iOS-Microsoft-Graph-Connect-Obj-C](https://github.com/microsoftgraph/ios-objectivec-connect-rest-sample)
-* [Microsoft Graph overview page](https://graph.microsoft.io)
+* [Microsoft Graph overview page](https://developer.microsoft.com/en-us/graph/docs)
 * [Using CocoaPods](https://guides.cocoapods.org/using/using-cocoapods.html)
 
 ## Copyright
-Copyright (c) 2016 Microsoft. All rights reserved.
+Copyright (c) 2017 Microsoft. All rights reserved.
 
