@@ -2,5 +2,5 @@
 # platform :ios, '6.0'
 
 target 'O365-iOS-Microsoft-Graph-Connect-Swift' do  
-pod 'ADALiOS', '1.2.4' 
+pod 'ADALiOS', '1.2.5' 
 end
