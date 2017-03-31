@@ -1,7 +1,7 @@
 /*
-* Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
-* See LICENSE in the project root for license information.
-*/
+ * Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
+ * See LICENSE in the project root for license information.
+ */
 
 import Foundation
 
@@ -12,29 +12,32 @@ enum AuthenticationResult {
 
 
 class AuthenticationManager {
-
+    
     // MARK: Properties and variables
     // Singleton class
-    class var sharedInstance: AuthenticationManager? {
+    class var sharedInstance: AuthenticationManager {
         struct Singleton {
             static let instance = AuthenticationManager()
-            
         }
-        return Singleton.instance
+        // We need to know this ASAP if we get generate singleton.
+        assert(Singleton.instance != nil)
+        return Singleton.instance!
     }
-
+    
     // Internal properties
-    var accessToken: String?
-    var userInformation: ADUserInformation?
+    internal var accessToken: String?
+    internal var userInformation: ADUserInformation?
     
     // Private properties
     fileprivate let context: ADAuthenticationContext!
-
+    
     // MARK: Initializer
     init?() {
         var error: ADAuthenticationError?
         guard let context = ADAuthenticationContext(authority: AuthenticationConstants.Authority, error: &error) else {
-            print(error!.localizedDescription)
+            if let error = error {
+                print(error.localizedDescription)
+            }
             self.context = nil
             return nil
         }
@@ -45,23 +48,24 @@ class AuthenticationManager {
     //Acquire and store access token and user information.
     func acquireAuthToken(_ completion: ((AuthenticationResult) -> Void)?) {
         self.context.acquireToken(withResource: AuthenticationConstants.ResourceId,
-                                              clientId: AuthenticationConstants.ClientId,
-                                              redirectUri: AuthenticationConstants.RedirectUri,
-                                              completionBlock:{
-                                                (result:ADAuthenticationResult?) in
-                                                
-                                                if let handler = completion {
-                                                    if result?.status == AD_SUCCEEDED {
-                                                        self.accessToken = result?.accessToken
-                                                        self.userInformation = result?.tokenCacheStoreItem.userInformation
-                                                        
-                                                        handler(AuthenticationResult.success)
-                                                    }
-                                                    else {
-                                                        handler(AuthenticationResult.failure((result?.error)!))
-                                                    }
-                                                }
-        })
+                                  clientId: AuthenticationConstants.ClientId,
+                                  redirectUri: AuthenticationConstants.RedirectUri) {
+                                    [weak self] (result:ADAuthenticationResult?) in
+                                    
+                                    if let handler = completion {
+                                        if result?.status == AD_SUCCEEDED {
+                                            self?.accessToken = result?.accessToken
+                                            self?.userInformation = result?.tokenCacheStoreItem.userInformation
+                                            
+                                            handler(AuthenticationResult.success)
+                                        }
+                                        else {
+                                            if let error = result?.error {
+                                                handler(AuthenticationResult.failure(error))
+                                            }
+                                        }
+                                    }
+        }
     }
     
     //Clears the ADAL token cache and the cookie cache.
@@ -77,9 +81,9 @@ class AuthenticationManager {
         
         var error: ADAuthenticationError?
         context.tokenCacheStore.removeAllWithError(&error)
-        if let _ = error {
+        if let error = error {
             print(error )
         }
     }
-
+    
 }
