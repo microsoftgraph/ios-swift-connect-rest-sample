@@ -26,6 +26,7 @@ class SendMailViewController : UIViewController {
 
     // Properties
     var userEmailAddress: String!
+    var userName: String!
     
     // MARK: ViewController methods
     override func viewWillAppear(_ animated: Bool) {
@@ -35,11 +36,19 @@ class SendMailViewController : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.emailTextField.text = self.userEmailAddress
-        
-        let idx = self.userEmailAddress.characters.index(of: "@")
-        self.headerLabel.text = "Hi, \(self.userEmailAddress.substring(to: idx!) )"
+      //  self.headerLabel.text = "Hi, unkown user!"
+
+        do {
+            try self.userName = AuthenticationClass.sharedInstance?.authenticationProvider.users()[0].name!
+            try self.emailTextField.text = AuthenticationClass.sharedInstance?.authenticationProvider.users()[0].displayableId
+            self.userEmailAddress = self.emailTextField.text
+            self.headerLabel.text = "Hi, \(self.userName! )"
+
+        } catch {
+            self.updateUI(showActivityIndicator: false,
+                          statusText: "Error getting user email address.")
+        }
+
         
     }
     
@@ -58,7 +67,7 @@ class SendMailViewController : UIViewController {
     }
     
     @IBAction func disconnect(_ sender: AnyObject) {
-        AuthenticationManager.sharedInstance!.clearCredentials()
+        AuthenticationClass.sharedInstance?.disconnect()
         self.navigationController?.popViewController(animated: true)
     }
     
@@ -100,23 +109,37 @@ class SendMailViewController : UIViewController {
         
         // Acquire an access token, if logged in already, this shouldn't bring up an authentication window.
         // However, if the token is expired, user will be asked to sign in again.
-        AuthenticationManager.sharedInstance!.acquireAuthToken {
-            (result: AuthenticationResult) -> Void in
+        AuthenticationClass.sharedInstance?.connectToGraph(scopes: ApplicationConstants.kScopes) {
+            (result: ApplicationConstants.MSGraphError?, accessToken: String) -> Void in
             
-            switch result {
 
-            case .success:
+            if  ((AuthenticationClass.sharedInstance?.accessToken) == nil){
+                // Upon failure, alert and go back.
+                let localizedDescription: String = ApplicationConstants.MSGraphError.nsErrorType(error: result! as NSError).localizedDescription
+                print(localizedDescription)
+                
+                let alertController = UIAlertController(title: "Error", message: ApplicationConstants.MSGraphError.nsErrorType(error: result! as NSError).localizedDescription, preferredStyle: .alert)
+                alertController.addAction(UIAlertAction(title: "Close", style: .destructive, handler: {
+                    (action) -> Void in
+                    AuthenticationClass.sharedInstance?.disconnect()
+                    self.navigationController!.popViewController(animated: true)
+                }))
+                
+                self.present(alertController, animated: true, completion: nil)
+ 
+            } else {
                 // Upon success, send mail.
                 let request = NSMutableURLRequest(url: URL(string: "https://graph.microsoft.com/v1.0/me/microsoft.graph.sendmail")!)
                 request.httpMethod = "POST"
                 request.setValue("application/json", forHTTPHeaderField: "Content-Type")
                 request.setValue("application/json, text/plain, */*", forHTTPHeaderField: "Accept")
                 
-                request.setValue("Bearer \(AuthenticationManager.sharedInstance!.accessToken!)", forHTTPHeaderField: "Authorization")
+                let accessToken = AuthenticationClass.sharedInstance?.accessToken
+                print("AccessToken: \(accessToken!)")
+                request.setValue("Bearer \(accessToken!)" as String, forHTTPHeaderField: "Authorization")
                 
                 request.httpBody = content
                 
-
                 
                 let task = URLSession.shared.dataTask(with:request as URLRequest, completionHandler: {
                     (data, response, error) in
@@ -133,29 +156,18 @@ class SendMailViewController : UIViewController {
                         self.updateUI(showActivityIndicator: false, statusText: self.successString)
                     }
                     else {
-                        print("response: \(response)")
+                        print("response: \(response!)")
                         print(String(data: data!, encoding: String.Encoding.utf8) as Any )
                         self.updateUI(showActivityIndicator: false, statusText: self.failureString)
                     }
                 })
                 
                 task.resume()
-            
-            case .failure(let error):
-                // Upon failure, alert and go back.
-                print(error)
 
-                let alertController = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-                alertController.addAction(UIAlertAction(title: "Close", style: .destructive, handler: {
-                    (action) -> Void in
-                    AuthenticationManager.sharedInstance?.clearCredentials()
-                    self.navigationController!.popViewController(animated: true)
-                }))
-                
-                self.present(alertController, animated: true, completion: nil)
+            }
+            
             
                 
-            }
         }
     }
     

@@ -1,8 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="uGc-al-Cx3">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="uGc-al-Cx3">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Office 365 Connect-->
@@ -14,20 +18,25 @@
                         <viewControllerLayoutGuide type="bottom" id="kJJ-eU-XYD"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="bjh-3P-mNL">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rPH-Aq-OvZ">
-                                <rect key="frame" x="224" y="285" width="153" height="30"/>
+                                <rect key="frame" x="111" y="318.5" width="153" height="30"/>
                                 <state key="normal" title="Connect to Office 365">
-                                    <color key="titleShadowColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
                                     <action selector="connect:" destination="EER-pl-Qyl" eventType="touchUpInside" id="UMW-a3-N4u"/>
                                 </connections>
                             </button>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="ffk-iV-PbL">
+                                <rect key="frame" x="169" y="241.5" width="37" height="37"/>
+                                <color key="color" red="0.2725624144077301" green="0.58256793022155762" blue="0.99852830171585083" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </activityIndicatorView>
+
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="centerY" secondItem="rPH-Aq-OvZ" secondAttribute="centerY" id="V0N-V3-maG"/>
                             <constraint firstAttribute="centerX" secondItem="rPH-Aq-OvZ" secondAttribute="centerX" id="uVe-oB-9XO"/>
@@ -36,6 +45,7 @@
                     <navigationItem key="navigationItem" title="Office 365 Connect" id="GsL-UA-k9u"/>
                     <connections>
                         <outlet property="connectButton" destination="rPH-Aq-OvZ" id="Nzr-VV-eBU"/>
+                        <outlet property="activityIndicator" destination="ffk-iV-PbL" id="Ym4-so-CX4"/>
                         <segue destination="BYZ-38-t0r" kind="show" identifier="sendMail" id="ak4-kH-II1"/>
                     </connections>
                 </viewController>
@@ -52,32 +62,32 @@
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hi User" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0ko-Y4-ff1">
-                                <rect key="frame" x="267" y="114" width="66" height="24"/>
+                                <rect key="frame" x="154.5" y="114" width="66" height="24"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="E0x-hs-Ygo">
-                                <rect key="frame" x="160" y="242" width="280" height="30"/>
+                                <rect key="frame" x="47.5" y="242" width="280" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zfR-Ng-tUA">
-                                <rect key="frame" x="280" y="280" width="40" height="33"/>
+                                <rect key="frame" x="167.5" y="280" width="40" height="33"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Send">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
                                     <action selector="sendMail:" destination="BYZ-38-t0r" eventType="touchUpInside" id="BIj-hK-Xbd"/>
                                 </connections>
                             </button>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="You're now connected to Office 365. Tap the Send button below to send a message from your account using the Office 365 SDK." translatesAutoresizingMaskIntoConstraints="NO" id="ypK-G2-SQT">
-                                <rect key="frame" x="160" y="146" width="280" height="88"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <rect key="frame" x="47.5" y="146" width="280" height="88"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="88" id="H9T-y4-XDt"/>
                                     <constraint firstAttribute="width" constant="280" id="ONr-0f-jND"/>
@@ -86,20 +96,20 @@
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="efu-pn-4Ym">
-                                <rect key="frame" x="160" y="363" width="280" height="130"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <rect key="frame" x="47.5" y="363" width="280" height="130"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="130" id="HGU-1x-UkF"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="wsG-iO-nrj">
-                                <rect key="frame" x="282" y="365" width="37" height="37"/>
-                                <color key="color" red="0.17254901959999999" green="0.17254901959999999" blue="0.17254901959999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="wsG-iO-nrj" userLabel="Activity Indicator">
+                                <rect key="frame" x="169" y="365" width="37" height="37"/>
+                                <color key="color" red="0.12934963405132294" green="0.12934574484825134" blue="0.12934795022010803" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </activityIndicatorView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="ypK-G2-SQT" firstAttribute="trailing" secondItem="E0x-hs-Ygo" secondAttribute="trailing" id="1so-Y2-Csi"/>
                             <constraint firstItem="zfR-Ng-tUA" firstAttribute="top" secondItem="E0x-hs-Ygo" secondAttribute="bottom" constant="8" id="22d-T8-If6"/>
@@ -134,11 +144,12 @@
                     </navigationItem>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="activityIndicator" destination="wsG-iO-nrj" id="32U-ZN-ho9"/>
                         <outlet property="emailTextField" destination="E0x-hs-Ygo" id="WlJ-K0-4ld"/>
                         <outlet property="headerLabel" destination="0ko-Y4-ff1" id="u2R-cN-m9U"/>
                         <outlet property="sendMailButton" destination="zfR-Ng-tUA" id="eoO-yY-ooz"/>
                         <outlet property="statusTextView" destination="efu-pn-4Ym" id="Tf4-SN-B8c"/>
+                        <outlet property="activityIndicator" destination="wsG-iO-nrj" id="Ym4-so-CX9"/>
+
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

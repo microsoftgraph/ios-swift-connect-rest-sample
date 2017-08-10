@@ -16,36 +16,80 @@ class ConnectViewController: UIViewController {
     
     // Outlets
     @IBOutlet var connectButton: UIButton!
+    @IBOutlet var activityIndicator: UIActivityIndicatorView!
 
-    // Actions
-    @IBAction func connect(_ sender: AnyObject) {
-        
-        AuthenticationManager.sharedInstance?.acquireAuthToken ({
-            (result: AuthenticationResult) -> Void in
-            
-            switch result {
-            case .success:
-                DispatchQueue.main.async(execute: { () -> Void in
-                    self.performSegue(withIdentifier: "sendMail", sender: self)
-                })
-                
-            case .failure(let error):
-                DispatchQueue.main.async(execute: { () -> Void in
-                    let alertController = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-                    alertController.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))
-                    self.present(alertController, animated: true, completion: nil)
-                })
-            }
-        })
-    }
 
     // Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "sendMail" {
-            let vc: SendMailViewController = segue.destination as! SendMailViewController
-            vc.userEmailAddress = AuthenticationManager.sharedInstance?.userInformation?.userId
+            let _: SendMailViewController = segue.destination as! SendMailViewController
         }
     }
 
+}
+// MARK: Actions
+private extension ConnectViewController {
+    @IBAction func connect(_ sender: AnyObject) {
+        authenticate()
+    }
+}
+
+
+// MARK: Authentication
+private extension ConnectViewController {
+    func authenticate() {
+        loadingUI(show: true)
+        
+        let scopes = ApplicationConstants.kScopes
+        
+        AuthenticationClass.sharedInstance?.connectToGraph( scopes: scopes) {
+            (error, accessToken) in
+            
+            defer {self.loadingUI(show: false)}
+            
+            if let graphError = error {
+                switch graphError {
+                case .nsErrorType(let nsError):
+                    print(NSLocalizedString("ERROR", comment: ""), nsError.userInfo)
+                    self.showError(message: NSLocalizedString("CHECK_LOG_ERROR", comment: ""))
+                }
+            }
+            else {
+                // run on main thread!!
+                DispatchQueue.main.async {
+                    self.performSegue(withIdentifier: "sendMail", sender: nil)
+                }
+                
+            }
+                
+        }
+    }
+}
+
+
+
+// MARK: UI Helper
+private extension ConnectViewController {
+    func loadingUI(show: Bool) {
+        if show {
+            self.activityIndicator.startAnimating()
+            self.connectButton.setTitle(NSLocalizedString("CONNECTING", comment: ""), for: UIControlState())
+            self.connectButton.isEnabled = false;
+        }
+        else {
+            self.activityIndicator.stopAnimating()
+            self.connectButton.setTitle(NSLocalizedString("CONNECT", comment: ""), for: UIControlState())
+            self.connectButton.isEnabled = true;
+        }
+    }
+    
+    func showError(message:String) {
+        DispatchQueue.main.async(execute: {
+            let alertControl = UIAlertController(title: NSLocalizedString("ERROR", comment: ""), message: message, preferredStyle: .alert)
+            alertControl.addAction(UIAlertAction(title: NSLocalizedString("CLOSE", comment: ""), style: .default, handler: nil))
+            
+            self.present(alertControl, animated: true, completion: nil)
+        })
+    }
 }
 

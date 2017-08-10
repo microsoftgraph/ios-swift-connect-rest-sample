@@ -14,9 +14,10 @@
 		969D2FEF1C57EE48007E9DB0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 969D2FEE1C57EE48007E9DB0 /* Assets.xcassets */; };
 		969D2FF21C57EE48007E9DB0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 969D2FF01C57EE48007E9DB0 /* LaunchScreen.storyboard */; };
 		969D2FFD1C57EEC4007E9DB0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 969D2FFB1C57EEC4007E9DB0 /* Main.storyboard */; };
-		969D2FFF1C57F03C007E9DB0 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969D2FFE1C57F03C007E9DB0 /* AuthenticationManager.swift */; };
 		969D30051C57F5A6007E9DB0 /* AuthenticationConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969D30041C57F5A6007E9DB0 /* AuthenticationConstants.swift */; };
 		969D30071C5833F4007E9DB0 /* ConnectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969D30061C5833F4007E9DB0 /* ConnectViewController.swift */; };
+		CF29C7901F338AAE00C6F07C /* MSAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF29C78F1F338AAE00C6F07C /* MSAL.framework */; };
+		CFB93F011F38E5EA00111610 /* AuthenticationClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB93F001F38E5EA00111610 /* AuthenticationClass.swift */; };
 		E53518F57898BAF838D3167C /* libPods-O365-iOS-Microsoft-Graph-Connect-Swift.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 665E4C782FA0326B4F9CBE85 /* libPods-O365-iOS-Microsoft-Graph-Connect-Swift.a */; };
 /* End PBXBuildFile section */
 
@@ -33,13 +34,14 @@
 		969D2FF11C57EE48007E9DB0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		969D2FF31C57EE48007E9DB0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		969D2FFC1C57EEC4007E9DB0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		969D2FFE1C57F03C007E9DB0 /* AuthenticationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
 		969D30001C57F099007E9DB0 /* O365-iOS-Microsoft-Graph-Connect-Swift-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "O365-iOS-Microsoft-Graph-Connect-Swift-Bridging-Header.h"; sourceTree = "<group>"; };
 		969D30041C57F5A6007E9DB0 /* AuthenticationConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationConstants.swift; sourceTree = "<group>"; };
 		969D30061C5833F4007E9DB0 /* ConnectViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectViewController.swift; sourceTree = "<group>"; };
 		A192148D10F2B8AAE0AF4785 /* Pods-O365-iOS-Microsoft-Graph-Connect-Swift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-O365-iOS-Microsoft-Graph-Connect-Swift.debug.xcconfig"; path = "Pods/Target Support Files/Pods-O365-iOS-Microsoft-Graph-Connect-Swift/Pods-O365-iOS-Microsoft-Graph-Connect-Swift.debug.xcconfig"; sourceTree = "<group>"; };
 		A9894CAE9AB623E1A48C2400 /* Pods-O365-iOS-Microsoft-Graph-Connect-Swift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-O365-iOS-Microsoft-Graph-Connect-Swift.release.xcconfig"; path = "Pods/Target Support Files/Pods-O365-iOS-Microsoft-Graph-Connect-Swift/Pods-O365-iOS-Microsoft-Graph-Connect-Swift.release.xcconfig"; sourceTree = "<group>"; };
 		BAE73B453ABE65548E08A939 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		CF29C78F1F338AAE00C6F07C /* MSAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MSAL.framework; path = Carthage/Build/iOS/MSAL.framework; sourceTree = "<group>"; };
+		CFB93F001F38E5EA00111610 /* AuthenticationClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationClass.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CF29C7901F338AAE00C6F07C /* MSAL.framework in Frameworks */,
 				E53518F57898BAF838D3167C /* libPods-O365-iOS-Microsoft-Graph-Connect-Swift.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -57,6 +60,7 @@
 		1A89F68346D3FAB5CF55AC1B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CF29C78F1F338AAE00C6F07C /* MSAL.framework */,
 				BAE73B453ABE65548E08A939 /* libPods.a */,
 				665E4C782FA0326B4F9CBE85 /* libPods-O365-iOS-Microsoft-Graph-Connect-Swift.a */,
 			);
@@ -84,6 +88,7 @@
 		969D2FE61C57EE48007E9DB0 /* O365-iOS-Microsoft-Graph-Connect-Swift */ = {
 			isa = PBXGroup;
 			children = (
+				CFB93F001F38E5EA00111610 /* AuthenticationClass.swift */,
 				96097C371C59783000332CBF /* EmailBody.html */,
 				96097C341C5977BB00332CBF /* EmailPostContent.json */,
 				969D2FE71C57EE48007E9DB0 /* AppDelegate.swift */,
@@ -91,7 +96,6 @@
 				969D2FF01C57EE48007E9DB0 /* LaunchScreen.storyboard */,
 				969D2FFB1C57EEC4007E9DB0 /* Main.storyboard */,
 				969D2FF31C57EE48007E9DB0 /* Info.plist */,
-				969D2FFE1C57F03C007E9DB0 /* AuthenticationManager.swift */,
 				969D30041C57F5A6007E9DB0 /* AuthenticationConstants.swift */,
 				969D30001C57F099007E9DB0 /* O365-iOS-Microsoft-Graph-Connect-Swift-Bridging-Header.h */,
 				969D30061C5833F4007E9DB0 /* ConnectViewController.swift */,
@@ -124,6 +128,7 @@
 				969D2FE21C57EE48007E9DB0 /* Resources */,
 				C60ECBA787FEC4F2DCEA02D2 /* [CP] Embed Pods Frameworks */,
 				62900BADDFF91050D72662C4 /* [CP] Copy Pods Resources */,
+				CF29C7911F33CA1400C6F07C /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -146,7 +151,9 @@
 				TargetAttributes = {
 					969D2FE31C57EE48007E9DB0 = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = LRHXLKGK9F;
 						LastSwiftMigration = 0820;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -205,13 +212,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-O365-iOS-Microsoft-Graph-Connect-Swift-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C60ECBA787FEC4F2DCEA02D2 /* [CP] Embed Pods Frameworks */ = {
@@ -229,6 +239,20 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-O365-iOS-Microsoft-Graph-Connect-Swift/Pods-O365-iOS-Microsoft-Graph-Connect-Swift-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		CF29C7911F33CA1400C6F07C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/MSAL.framework",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -236,9 +260,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CFB93F011F38E5EA00111610 /* AuthenticationClass.swift in Sources */,
 				969D2FE81C57EE48007E9DB0 /* AppDelegate.swift in Sources */,
 				96097C321C59442B00332CBF /* SendMailViewController.swift in Sources */,
-				969D2FFF1C57F03C007E9DB0 /* AuthenticationManager.swift in Sources */,
 				969D30051C57F5A6007E9DB0 /* AuthenticationConstants.swift in Sources */,
 				969D30071C5833F4007E9DB0 /* ConnectViewController.swift in Sources */,
 			);
@@ -376,10 +400,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = LRHXLKGK9F;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = "O365-iOS-Microsoft-Graph-Connect-Swift/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.microsoft.O365-iOS-Microsoft-Graph-Connect-Swift";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.microsoft.O365-iOS-Microsoft-Graph-Connect-Swift-REST";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "O365-iOS-Microsoft-Graph-Connect-Swift/O365-iOS-Microsoft-Graph-Connect-Swift-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
@@ -392,10 +423,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = LRHXLKGK9F;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = "O365-iOS-Microsoft-Graph-Connect-Swift/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.microsoft.O365-iOS-Microsoft-Graph-Connect-Swift";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.microsoft.O365-iOS-Microsoft-Graph-Connect-Swift-REST";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "O365-iOS-Microsoft-Graph-Connect-Swift/O365-iOS-Microsoft-Graph-Connect-Swift-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
