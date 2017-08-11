@@ -26,18 +26,22 @@ The preview version of MSAL is distributed as source code using Carthage. To bui
 1. Open the Bash terminal and go to the app root folder.
 2. Create a **cartfile**: Copy `echo "github \"AzureAD/microsoft-authentication-library-for-objc\" \"master\"" > Cartfile`  into the terminal and run the command.
 3. Build the MSAL library: Copy `carthage update` into the terminal and run the command.        
-4. Open **O365-iOS-Microsoft-Graph-Connect-Swift.xcworkspace**
-5. Open **AuthenticationConstants.swift**. You'll see that the **ClientID** (application id you received from the registration process in the prerequisites section) can be added to the top of the file. Supply the necessary value here:
 
-   ```swift
+### Update the sample with your client id
+
+1. Open **O365-iOS-Microsoft-Graph-Connect-Swift.xcworkspace**
+2. Open **AuthenticationConstants.swift**. You'll see that the **ClientID** (application id you received from the registration process in the prerequisites section) can be added to the top of the file. Supply the necessary value here:
+
+  ```swift
        static let ClientId    = "[ENTER_YOUR_CLIENT_ID]]"
        static let ResourceId  = "https://graph.microsoft.com"
        static let kAuthority  = "https://login.microsoftonline.com/common/oauth2/v2.0"
        static let kGraphURI   = "https://graph.microsoft.com/v1.0/me/"
        static let kScopes: [String] = ["https://graph.microsoft.com/Mail.ReadWrite","https://graph.microsoft.com/Mail.Send","https://graph.microsoft.com/Files.ReadWrite","https://graph.microsoft.com/User.ReadBasic.All"
 
-    ```   
-6. Open **Info.plist** as source code and update the client id:
+  ```
+
+3. Open **Info.plist** as source code and update the client id:
 
    ```xml
        <key>CFBundleURLTypes</key>
@@ -57,7 +61,7 @@ The preview version of MSAL is distributed as source code using Carthage. To bui
 
    ```
 
-5. Run the sample.
+4. Run the sample.
 
 <a name="contributing"></a>
 ## Contributing ##
