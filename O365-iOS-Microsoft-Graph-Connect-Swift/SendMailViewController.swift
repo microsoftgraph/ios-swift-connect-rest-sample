@@ -135,9 +135,7 @@ class SendMailViewController : UIViewController {
                 request.setValue("application/json, text/plain, */*", forHTTPHeaderField: "Accept")
                 
                 let accessToken = AuthenticationClass.sharedInstance?.accessToken
-                print("AccessToken: \(accessToken!)")
                 request.setValue("Bearer \(accessToken!)" as String, forHTTPHeaderField: "Authorization")
-                
                 request.httpBody = content
                 
                 

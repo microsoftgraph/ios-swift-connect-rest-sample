@@ -6,10 +6,9 @@ Connecting to Microsoft Office 365 is the first step every iOS app must take to 
  
 ## Prerequisites
 * [Xcode](https://developer.apple.com/xcode/downloads/) version 8.2.1 from Apple
-* Installation of [CocoaPods](https://guides.cocoapods.org/using/using-cocoapods.html) as a dependency manager.
 * An Office 365 account. You can sign up for [an Office 365 Developer subscription](https://aka.ms/devprogramsignup) that includes the resources that you need to start building Office 365 apps.
 
-     > Note: If you already have a subscription, the previous link sends you to a page with the message *Sorry, you can’t add that to your current account*. In that case, use an account from your current Office 365 subscription.Mic      
+     > Note: If you already have a subscription, the previous link sends you to a page with the message *Sorry, you can’t add that to your current account*. In that case, use an account from your current Office 365 subscription.
 * A client id (application id) of an application registered in Azure. This sample application must be granted the **Send mail as a user** permission for **Microsoft Graph**. To create the registration, see [Grant permissions to the Connect application in Azure](https://github.com/microsoftgraph/ios-swift-connect-rest-sample/wiki/Grant-permissions-to-the-Connect-application-in-Azure).
 
 >**Note:** The sample was tested on Xcode 8.2.1. This sample supports Xcode 8 and iOS10, which uses the Swift 3.0 framework.
@@ -18,25 +17,45 @@ Connecting to Microsoft Office 365 is the first step every iOS app must take to 
 ## Running this sample in Xcode
 
 1. Clone this repository
-2. Use CocoaPods to import the Active Directory Authentication Library (ADAL) iOS dependency. This sample app already contains a podfile that will get the ADAL components (pods) into the project:
-        
-        pod 'ADALiOS', '= 1.2.5'
+2. Use [Carthage](https://github.com/Carthage/Carthage) to import the Microsoft Authenticaion Library (MSAL) iOS dependency. Download the latest version of Carthage [here](https://github.com/Carthage/Carthage/releases).
 
-   Simply navigate to the project root, from **Terminal** and run: 
-        
-        pod install
-        
-   For more information, see **Using CocoaPods** in [Additional Resources](#additional-resources).
-  
-3. Open **O365-iOS-Microsoft-Graph-Connect-Swift.xcworkspace**
-4. Open **AuthenticationConstants.swift**. You'll see that the **ClientID** (application id you received from the registration process in the prerequisites section) can be added to the top of the file. Supply the necessary value here:
+### Build the MSAL framework
 
-        // You will set your application's clientId.
-    	static let ClientId = "ENTER_YOUR_CLIENT_ID"
-    	static let RedirectUri = URL.init(string: "urn:ietf:wg:oauth:2.0:oob")
-    	static let Authority = "https://login.microsoftonline.com/common"
-    	static let ResourceId = "https://graph.microsoft.com"
-    
+The preview version of MSAL is distributed as source code using Carthage. To build the source code, do these steps:
+
+1. Open the Bash terminal and go to the app root folder.
+2. Create a **cartfile**: Copy `echo "github \"AzureAD/microsoft-authentication-library-for-objc\" \"master\"" > Cartfile`  into the terminal and run the command.
+3. Build the MSAL library: Copy `carthage update` into the terminal and run the command.        
+4. Open **O365-iOS-Microsoft-Graph-Connect-Swift.xcworkspace**
+5. Open **AuthenticationConstants.swift**. You'll see that the **ClientID** (application id you received from the registration process in the prerequisites section) can be added to the top of the file. Supply the necessary value here:
+
+   ```swift
+       static let ClientId    = "[ENTER_YOUR_CLIENT_ID]]"
+       static let ResourceId  = "https://graph.microsoft.com"
+       static let kAuthority  = "https://login.microsoftonline.com/common/oauth2/v2.0"
+       static let kGraphURI   = "https://graph.microsoft.com/v1.0/me/"
+       static let kScopes: [String] = ["https://graph.microsoft.com/Mail.ReadWrite","https://graph.microsoft.com/Mail.Send","https://graph.microsoft.com/Files.ReadWrite","https://graph.microsoft.com/User.ReadBasic.All"
+
+    ```   
+6. Open **Info.plist** as source code and update the client id:
+
+   ```xml
+       <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLName</key>
+            <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>msal[ENTER_YOUR_CLIENT_ID]</string>
+                <string>auth</string>
+            </array>
+        </dict>
+    </array>
+
+   ```
 
 5. Run the sample.
 
