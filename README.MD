@@ -33,7 +33,7 @@ The preview version of MSAL is distributed as source code using Carthage. To bui
 2. Open **AuthenticationConstants.swift**. You'll see that the **ClientID** (application id you received from the registration process in the prerequisites section) can be added to the top of the file. Supply the necessary value here:
 
   ```swift
-       static let ClientId    = "[ENTER_YOUR_CLIENT_ID]]"
+       static let ClientId    = "ENTER_YOUR_CLIENT_ID"
        static let ResourceId  = "https://graph.microsoft.com"
        static let kAuthority  = "https://login.microsoftonline.com/common/oauth2/v2.0"
        static let kGraphURI   = "https://graph.microsoft.com/v1.0/me/"
@@ -53,7 +53,7 @@ The preview version of MSAL is distributed as source code using Carthage. To bui
             <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
             <key>CFBundleURLSchemes</key>
             <array>
-                <string>msal[ENTER_YOUR_CLIENT_ID]</string>
+                <string>msalENTER_YOUR_CLIENT_ID</string>
                 <string>auth</string>
             </array>
         </dict>
