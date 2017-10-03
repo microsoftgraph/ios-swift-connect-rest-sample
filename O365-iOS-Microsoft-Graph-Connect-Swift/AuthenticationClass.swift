@@ -23,7 +23,22 @@ class AuthenticationClass {
     init () {
 
         do {
-            authenticationProvider = try MSALPublicClientApplication.init(clientId: ApplicationConstants.ClientId, authority: ApplicationConstants.kAuthority)
+            
+            //Get the MSAL client Id for this Azure app registration. We store it in the main bundle
+            var redirectUrl: String = "";
+            var myDict: NSDictionary?
+            if let path = Bundle.main.path(forResource: "Info", ofType: "plist") {
+                myDict = NSDictionary(contentsOfFile: path)
+            }
+            if let dict = myDict {
+                let array: NSArray =  (dict.object(forKey: "CFBundleURLTypes") as? NSArray)!;
+                redirectUrl = getRedirectUrlFromMSALArray(array: array);
+            }
+            //  var NSRange range = [redirectUrl rangeOfString:@"msal"];
+            let range: Range<String.Index> = redirectUrl.range(of: "msal")!;
+            let kClientId: String = redirectUrl.substring(from: range.upperBound);
+            
+            authenticationProvider = try MSALPublicClientApplication.init(clientId: kClientId, authority: ApplicationConstants.kAuthority)
         } catch  let error as NSError  {
             self.lastInitError = error.userInfo.description
             authenticationProvider = MSALPublicClientApplication.init()
@@ -113,5 +128,15 @@ class AuthenticationClass {
         }
         
     }
+    
+    // Get client id from bundle
+    
+    func getRedirectUrlFromMSALArray(array: NSArray) -> String {
+        let arrayElement: NSDictionary = array.object(at: 0) as! NSDictionary;
+        let redirectArray: NSArray = arrayElement.value(forKeyPath: "CFBundleURLSchemes") as! NSArray;
+        let subString: NSString = redirectArray.object(at: 0) as! NSString;
+        return subString as String;
+    }
+
 
 }

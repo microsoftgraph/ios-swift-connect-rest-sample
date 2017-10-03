@@ -10,7 +10,6 @@ import Foundation
 
 struct ApplicationConstants {
 
-    static let ClientId    = "ENTER_YOUR_CLIENT_ID"
     static let ResourceId  = "https://graph.microsoft.com"
     static let kAuthority  = "https://login.microsoftonline.com/common/oauth2/v2.0"
     static let kGraphURI   = "https://graph.microsoft.com/v1.0/me/"
