@@ -30,17 +30,6 @@ The preview version of MSAL is distributed as source code using Carthage. To bui
 ### Update the sample with your client id
 
 1. Open **O365-iOS-Microsoft-Graph-Connect-Swift.xcworkspace**
-2. Open **AuthenticationConstants.swift**. You'll see that the **ClientID** (application id you received from the registration process in the prerequisites section) can be added to the top of the file. Supply the necessary value here:
-
-  ```swift
-       static let ClientId    = "ENTER_YOUR_CLIENT_ID"
-       static let ResourceId  = "https://graph.microsoft.com"
-       static let kAuthority  = "https://login.microsoftonline.com/common/oauth2/v2.0"
-       static let kGraphURI   = "https://graph.microsoft.com/v1.0/me/"
-       static let kScopes: [String] = ["https://graph.microsoft.com/Mail.ReadWrite","https://graph.microsoft.com/Mail.Send","https://graph.microsoft.com/Files.ReadWrite","https://graph.microsoft.com/User.ReadBasic.All"
-
-  ```
-
 3. Open **Info.plist** as source code and update the client id:
 
    ```xml
@@ -82,7 +71,7 @@ Questions about Microsoft Graph development in general should be posted to [Stac
 * [Office Dev Center](https://dev.office.com/)
 * [O365-iOS-Microsoft-Graph-Connect-Obj-C](https://github.com/microsoftgraph/ios-objectivec-connect-rest-sample)
 * [Microsoft Graph overview page](https://developer.microsoft.com/en-us/graph/docs)
-* [Using CocoaPods](https://guides.cocoapods.org/using/using-cocoapods.html)
+* [Carthage](https://github.com/Carthage/Carthage)
 
 ## Copyright
 Copyright (c) 2017 Microsoft. All rights reserved.
