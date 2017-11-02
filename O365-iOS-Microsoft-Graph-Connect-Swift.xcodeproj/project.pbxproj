@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		96097C321C59442B00332CBF /* SendMailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96097C311C59442B00332CBF /* SendMailViewController.swift */; };
+		6FC03CF0D43547A57F5EEC18 /* Pods_O365_iOS_Microsoft_Graph_Connect_Swift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09F41FDC19FE5DAA3F12A713 /* Pods_O365_iOS_Microsoft_Graph_Connect_Swift.framework */; };
 		96097C361C5977BB00332CBF /* EmailPostContent.json in Resources */ = {isa = PBXBuildFile; fileRef = 96097C341C5977BB00332CBF /* EmailPostContent.json */; };
 		96097C391C59783000332CBF /* EmailBody.html in Resources */ = {isa = PBXBuildFile; fileRef = 96097C371C59783000332CBF /* EmailBody.html */; };
 		969D2FE81C57EE48007E9DB0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969D2FE71C57EE48007E9DB0 /* AppDelegate.swift */; };
@@ -17,15 +17,16 @@
 		969D30051C57F5A6007E9DB0 /* AuthenticationConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969D30041C57F5A6007E9DB0 /* AuthenticationConstants.swift */; };
 		969D30071C5833F4007E9DB0 /* ConnectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969D30061C5833F4007E9DB0 /* ConnectViewController.swift */; };
 		CF29C7901F338AAE00C6F07C /* MSAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF29C78F1F338AAE00C6F07C /* MSAL.framework */; };
+		CF9267311F95629F003EED65 /* SendMailViewController_WithPromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF9267301F95629F003EED65 /* SendMailViewController_WithPromise.swift */; };
+		CF9EC1091F96FB4300252934 /* SendMailViewController_nopromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF9EC1081F96FB4300252934 /* SendMailViewController_nopromise.swift */; };
 		CFB93F011F38E5EA00111610 /* AuthenticationClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB93F001F38E5EA00111610 /* AuthenticationClass.swift */; };
-		E53518F57898BAF838D3167C /* libPods-O365-iOS-Microsoft-Graph-Connect-Swift.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 665E4C782FA0326B4F9CBE85 /* libPods-O365-iOS-Microsoft-Graph-Connect-Swift.a */; };
+		CFDA99F41F95653C00927E07 /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CFDA99F51F95653C00927E07 /* PromiseKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		01ADB592A48B3BDEB910F2FA /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		09F41FDC19FE5DAA3F12A713 /* Pods_O365_iOS_Microsoft_Graph_Connect_Swift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_O365_iOS_Microsoft_Graph_Connect_Swift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		11E9E66857EE2B91B0F80EE8 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
-		665E4C782FA0326B4F9CBE85 /* libPods-O365-iOS-Microsoft-Graph-Connect-Swift.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-O365-iOS-Microsoft-Graph-Connect-Swift.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		96097C311C59442B00332CBF /* SendMailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendMailViewController.swift; sourceTree = "<group>"; };
 		96097C351C5977BB00332CBF /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = Base; path = Base.lproj/EmailPostContent.json; sourceTree = "<group>"; };
 		96097C381C59783000332CBF /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = Base.lproj/EmailBody.html; sourceTree = "<group>"; };
 		969D2FE41C57EE48007E9DB0 /* O365-iOS-Microsoft-Graph-Connect-Swift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "O365-iOS-Microsoft-Graph-Connect-Swift.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -41,7 +42,10 @@
 		A9894CAE9AB623E1A48C2400 /* Pods-O365-iOS-Microsoft-Graph-Connect-Swift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-O365-iOS-Microsoft-Graph-Connect-Swift.release.xcconfig"; path = "Pods/Target Support Files/Pods-O365-iOS-Microsoft-Graph-Connect-Swift/Pods-O365-iOS-Microsoft-Graph-Connect-Swift.release.xcconfig"; sourceTree = "<group>"; };
 		BAE73B453ABE65548E08A939 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF29C78F1F338AAE00C6F07C /* MSAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MSAL.framework; path = Carthage/Build/iOS/MSAL.framework; sourceTree = "<group>"; };
+		CF9267301F95629F003EED65 /* SendMailViewController_WithPromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMailViewController_WithPromise.swift; sourceTree = "<group>"; };
+		CF9EC1081F96FB4300252934 /* SendMailViewController_nopromise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendMailViewController_nopromise.swift; sourceTree = "<group>"; };
 		CFB93F001F38E5EA00111610 /* AuthenticationClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationClass.swift; sourceTree = "<group>"; };
+		CFDA99F51F95653C00927E07 /* PromiseKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PromiseKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,8 +53,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CFDA99F41F95653C00927E07 /* PromiseKit.framework in Frameworks */,
 				CF29C7901F338AAE00C6F07C /* MSAL.framework in Frameworks */,
-				E53518F57898BAF838D3167C /* libPods-O365-iOS-Microsoft-Graph-Connect-Swift.a in Frameworks */,
+				6FC03CF0D43547A57F5EEC18 /* Pods_O365_iOS_Microsoft_Graph_Connect_Swift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -60,9 +65,10 @@
 		1A89F68346D3FAB5CF55AC1B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CFDA99F51F95653C00927E07 /* PromiseKit.framework */,
 				CF29C78F1F338AAE00C6F07C /* MSAL.framework */,
 				BAE73B453ABE65548E08A939 /* libPods.a */,
-				665E4C782FA0326B4F9CBE85 /* libPods-O365-iOS-Microsoft-Graph-Connect-Swift.a */,
+				09F41FDC19FE5DAA3F12A713 /* Pods_O365_iOS_Microsoft_Graph_Connect_Swift.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -88,6 +94,7 @@
 		969D2FE61C57EE48007E9DB0 /* O365-iOS-Microsoft-Graph-Connect-Swift */ = {
 			isa = PBXGroup;
 			children = (
+				CF9EC1081F96FB4300252934 /* SendMailViewController_nopromise.swift */,
 				CFB93F001F38E5EA00111610 /* AuthenticationClass.swift */,
 				96097C371C59783000332CBF /* EmailBody.html */,
 				96097C341C5977BB00332CBF /* EmailPostContent.json */,
@@ -99,7 +106,7 @@
 				969D30041C57F5A6007E9DB0 /* AuthenticationConstants.swift */,
 				969D30001C57F099007E9DB0 /* O365-iOS-Microsoft-Graph-Connect-Swift-Bridging-Header.h */,
 				969D30061C5833F4007E9DB0 /* ConnectViewController.swift */,
-				96097C311C59442B00332CBF /* SendMailViewController.swift */,
+				CF9267301F95629F003EED65 /* SendMailViewController_WithPromise.swift */,
 			);
 			path = "O365-iOS-Microsoft-Graph-Connect-Swift";
 			sourceTree = "<group>";
@@ -230,9 +237,12 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-O365-iOS-Microsoft-Graph-Connect-Swift/Pods-O365-iOS-Microsoft-Graph-Connect-Swift-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -262,9 +272,10 @@
 			files = (
 				CFB93F011F38E5EA00111610 /* AuthenticationClass.swift in Sources */,
 				969D2FE81C57EE48007E9DB0 /* AppDelegate.swift in Sources */,
-				96097C321C59442B00332CBF /* SendMailViewController.swift in Sources */,
+				CF9EC1091F96FB4300252934 /* SendMailViewController_nopromise.swift in Sources */,
 				969D30051C57F5A6007E9DB0 /* AuthenticationConstants.swift in Sources */,
 				969D30071C5833F4007E9DB0 /* ConnectViewController.swift in Sources */,
+				CF9267311F95629F003EED65 /* SendMailViewController_WithPromise.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -22,7 +22,7 @@ class ConnectViewController: UIViewController {
     // Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "sendMail" {
-            let _: SendMailViewController = segue.destination as! SendMailViewController
+          //  let _: SendMailViewController = segue.destination as! SendMailViewController
         }
     }
 
@@ -31,6 +31,10 @@ class ConnectViewController: UIViewController {
 private extension ConnectViewController {
     @IBAction func connect(_ sender: AnyObject) {
         authenticate()
+    }
+    @IBAction func disconnect(_ sender: AnyObject) {
+        AuthenticationClass.sharedInstance?.disconnect()
+        self.navigationController?.popViewController(animated: true)
     }
 }
 
@@ -43,16 +47,17 @@ private extension ConnectViewController {
         let scopes = ApplicationConstants.kScopes
         
         AuthenticationClass.sharedInstance?.connectToGraph( scopes: scopes) {
-            (error, accessToken) in
+            (result: ApplicationConstants.MSGraphError?, accessToken: String) -> Bool  in
             
             defer {self.loadingUI(show: false)}
             
-            if let graphError = error {
+            if let graphError = result {
                 switch graphError {
                 case .nsErrorType(let nsError):
                     print(NSLocalizedString("ERROR", comment: ""), nsError.userInfo)
                     self.showError(message: NSLocalizedString("CHECK_LOG_ERROR", comment: ""))
                 }
+                return false
             }
             else {
                 // run on main thread!!
@@ -60,6 +65,7 @@ private extension ConnectViewController {
                     self.performSegue(withIdentifier: "sendMail", sender: nil)
                 }
                 
+                return true
             }
                 
         }
@@ -77,9 +83,12 @@ private extension ConnectViewController {
             self.connectButton.isEnabled = false;
         }
         else {
-            self.activityIndicator.stopAnimating()
-            self.connectButton.setTitle(NSLocalizedString("CONNECT", comment: ""), for: UIControlState())
-            self.connectButton.isEnabled = true;
+            DispatchQueue.main.async {
+                self.activityIndicator.stopAnimating()
+                self.connectButton.setTitle(NSLocalizedString("CONNECT", comment: ""), for: UIControlState())
+                self.connectButton.isEnabled = true;
+
+            }
         }
     }
     

@@ -51,7 +51,7 @@ class AuthenticationClass {
      If not, authentication will ask for credentials
      */
     func connectToGraph(scopes: [String],
-                        completion:@escaping (_ error: ApplicationConstants.MSGraphError?, _ accessToken: String) -> Void)  {
+                        completion:@escaping (_ error: ApplicationConstants.MSGraphError?, _ accessToken: String) -> Bool)  {
         
         var accessToken = String()
         do {
@@ -73,13 +73,13 @@ class AuthenticationClass {
                     
                     if error == nil {
                         self.accessToken = (result?.accessToken)!
-                        completion(nil, accessToken);
+                        _ = completion(nil, accessToken);
                         
                         
                     } else {
                         
                         //"Could not acquire token silently: \(error ?? "No error information" as! Error )"
-                        completion(ApplicationConstants.MSGraphError.nsErrorType(error: error! as NSError), "");
+                       var _ = completion(ApplicationConstants.MSGraphError.nsErrorType(error: error! as NSError), "");
                         
                     }
                 }
@@ -95,17 +95,17 @@ class AuthenticationClass {
                 authenticationProvider.acquireToken(forScopes: scopes) { (result, error) in
                     if error == nil {
                         accessToken = (result?.accessToken)!
-                        completion(nil, accessToken);
+                        var _ = completion(nil, accessToken);
                         
                         
                     } else  {
-                        completion(ApplicationConstants.MSGraphError.nsErrorType(error: error! as NSError), "");
+                        var _ = completion(ApplicationConstants.MSGraphError.nsErrorType(error: error! as NSError), "");
                         
                     }
                 }
                 
             } else {
-                completion(ApplicationConstants.MSGraphError.nsErrorType(error: error as NSError), error.localizedDescription);
+                var _ = completion(ApplicationConstants.MSGraphError.nsErrorType(error: error as NSError), error.localizedDescription);
 
             }
             
@@ -114,7 +114,7 @@ class AuthenticationClass {
             // This is the catch all error.
             
             
-            completion(ApplicationConstants.MSGraphError.nsErrorType(error: error as NSError), error.localizedDescription);
+            var _ = completion(ApplicationConstants.MSGraphError.nsErrorType(error: error as NSError), error.localizedDescription);
             
         }
     }

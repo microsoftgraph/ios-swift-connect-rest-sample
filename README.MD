@@ -42,13 +42,15 @@ The preview version of MSAL is distributed as source code using Carthage. To bui
             <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
             <key>CFBundleURLSchemes</key>
             <array>
-                <string>msalENTER_YOUR_CLIENT_ID</string>
+                <string>msalENTER_CLIENT_ID_HERE</string>
                 <string>auth</string>
             </array>
         </dict>
     </array>
 
    ```
+> **Note:** If the "ENTER\_CLIENT\_ID_HERE" string in `CFBundleURLSchemes` array element 1 is not copied exactly as it exists in the Azure Portal app registration, the authentication redirect url is formed incorrectly. User authentication results are sent to http://localhost insted of the correct redirect url. Safari cannot connect to http://localhost on an iOS device. 
+<br/>For example, `msal 3700a5ef-cee9-498e-a7e3-cbf701966331` includes a space between `msal` and the client id. This value forms an invalid redirect url.
 
 4. Run the sample.
 
