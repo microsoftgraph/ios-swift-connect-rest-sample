@@ -18,8 +18,9 @@
 		969D30071C5833F4007E9DB0 /* ConnectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969D30061C5833F4007E9DB0 /* ConnectViewController.swift */; };
 		CF29C7901F338AAE00C6F07C /* MSAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF29C78F1F338AAE00C6F07C /* MSAL.framework */; };
 		CF9267311F95629F003EED65 /* SendMailViewController_WithPromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF9267301F95629F003EED65 /* SendMailViewController_WithPromise.swift */; };
-		CF9EC1091F96FB4300252934 /* SendMailViewController_nopromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF9EC1081F96FB4300252934 /* SendMailViewController_nopromise.swift */; };
 		CFB93F011F38E5EA00111610 /* AuthenticationClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB93F001F38E5EA00111610 /* AuthenticationClass.swift */; };
+		CFCC68DC1FAD1B62007A0CBD /* CreateSharingLink.json in Resources */ = {isa = PBXBuildFile; fileRef = CFCC68DB1FAD1B61007A0CBD /* CreateSharingLink.json */; };
+		CFCC68DE1FAD2F5B007A0CBD /* OneDriveFileLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFCC68DD1FAD2F5B007A0CBD /* OneDriveFileLink.swift */; };
 		CFDA99F41F95653C00927E07 /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CFDA99F51F95653C00927E07 /* PromiseKit.framework */; };
 /* End PBXBuildFile section */
 
@@ -43,8 +44,9 @@
 		BAE73B453ABE65548E08A939 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF29C78F1F338AAE00C6F07C /* MSAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MSAL.framework; path = Carthage/Build/iOS/MSAL.framework; sourceTree = "<group>"; };
 		CF9267301F95629F003EED65 /* SendMailViewController_WithPromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMailViewController_WithPromise.swift; sourceTree = "<group>"; };
-		CF9EC1081F96FB4300252934 /* SendMailViewController_nopromise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendMailViewController_nopromise.swift; sourceTree = "<group>"; };
 		CFB93F001F38E5EA00111610 /* AuthenticationClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationClass.swift; sourceTree = "<group>"; };
+		CFCC68DB1FAD1B61007A0CBD /* CreateSharingLink.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CreateSharingLink.json; sourceTree = "<group>"; };
+		CFCC68DD1FAD2F5B007A0CBD /* OneDriveFileLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneDriveFileLink.swift; sourceTree = "<group>"; };
 		CFDA99F51F95653C00927E07 /* PromiseKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PromiseKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -94,7 +96,7 @@
 		969D2FE61C57EE48007E9DB0 /* O365-iOS-Microsoft-Graph-Connect-Swift */ = {
 			isa = PBXGroup;
 			children = (
-				CF9EC1081F96FB4300252934 /* SendMailViewController_nopromise.swift */,
+				CFCC68DB1FAD1B61007A0CBD /* CreateSharingLink.json */,
 				CFB93F001F38E5EA00111610 /* AuthenticationClass.swift */,
 				96097C371C59783000332CBF /* EmailBody.html */,
 				96097C341C5977BB00332CBF /* EmailPostContent.json */,
@@ -107,6 +109,7 @@
 				969D30001C57F099007E9DB0 /* O365-iOS-Microsoft-Graph-Connect-Swift-Bridging-Header.h */,
 				969D30061C5833F4007E9DB0 /* ConnectViewController.swift */,
 				CF9267301F95629F003EED65 /* SendMailViewController_WithPromise.swift */,
+				CFCC68DD1FAD2F5B007A0CBD /* OneDriveFileLink.swift */,
 			);
 			path = "O365-iOS-Microsoft-Graph-Connect-Swift";
 			sourceTree = "<group>";
@@ -187,6 +190,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CFCC68DC1FAD1B62007A0CBD /* CreateSharingLink.json in Resources */,
 				969D2FFD1C57EEC4007E9DB0 /* Main.storyboard in Resources */,
 				96097C391C59783000332CBF /* EmailBody.html in Resources */,
 				969D2FF21C57EE48007E9DB0 /* LaunchScreen.storyboard in Resources */,
@@ -272,10 +276,10 @@
 			files = (
 				CFB93F011F38E5EA00111610 /* AuthenticationClass.swift in Sources */,
 				969D2FE81C57EE48007E9DB0 /* AppDelegate.swift in Sources */,
-				CF9EC1091F96FB4300252934 /* SendMailViewController_nopromise.swift in Sources */,
 				969D30051C57F5A6007E9DB0 /* AuthenticationConstants.swift in Sources */,
 				969D30071C5833F4007E9DB0 /* ConnectViewController.swift in Sources */,
 				CF9267311F95629F003EED65 /* SendMailViewController_WithPromise.swift in Sources */,
+				CFCC68DE1FAD2F5B007A0CBD /* OneDriveFileLink.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

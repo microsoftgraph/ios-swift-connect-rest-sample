@@ -1,17 +1,21 @@
 {
     "Message": {
-        "Subject": "Mail received from the O365 iOS Microsoft Graph Connect Sample",
-        "Body": {
-            "ContentType": "<CONTENTTYPE>",
-            "Content": "<CONTENT>"
-        },
-        "ToRecipients": [
-                         {
-                         "EmailAddress": {
-                         "Address": "<EMAIL>"
+        "toRecipients": [{
+                         "emailAddress": {
+                         "address": "<EMAIL>"
                          }
-                         }
-                         ]
+                         }],
+        "@odata.type": "#microsoft.graph.message",
+        "subject": "MAIL_SUBJECT",
+        "body": {
+            "contentType": "<CONTENTTYPE>",
+            "content": "<CONTENT>"},
+        "attachments": [{
+                        "@odata.type": "<ODATA.TYPE>",
+                        "contentType": "<IMAGE.TYPE>",
+                        "contentBytes": "<CONTENTBYTES>",
+                        "name": "<NAME>"
+                        }]
     },
-    "SaveToSentItems": "true"
+    "SaveToSentItems": false
 }

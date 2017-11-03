@@ -20,7 +20,7 @@ class SendMailViewController : UIViewController {
         case InvalidRequest
         case UnsupportedOperation
         case Unauthorized
-        case None
+        case NoError
         
     }
     // MARK: Constants, Outlets, and Properties
@@ -50,10 +50,6 @@ class SendMailViewController : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //  self.headerLabel.text = "Hi, unkown user!"
-        
-        
-        
         //Get user state values before creating mail message to be sent
         do
         {
@@ -62,12 +58,15 @@ class SendMailViewController : UIViewController {
             self.userEmailAddress = self.emailTextField.text
             self.headerLabel.text = "Hi, \(self.userName! )"
             
-            
+            updateUI(showActivityIndicator: true, statusText: "Getting picture")
+
             //Important: Break out of async promise chain by declaring result returns Void
             _ = self.userPictureWork().then{
                 result -> Void in
                     self.userPictureUrl = (result[1] as! String)
                     self.userProfilePicture = (result[0] as! UIImage)
+                    self.updateUI(showActivityIndicator: false, statusText: "")
+
             }
         } catch _ as NSError{
             self.updateUI(showActivityIndicator: false,
@@ -75,46 +74,150 @@ class SendMailViewController : UIViewController {
         }
     }
 
-    //returns501 (Not implemented) for msa accounts
+    /**
+     Asynchronous
+       returns501 (Not implemented) for msa accounts
+     Gets the authenticated user's profile picture, uploads it to the user's OneDrive root folder,
+     Gets the web url sharing link to the uploaded photo.
+     - returns:
+     A Promise wrapping an array of AnyObject. Element 0: the sharing url. Element 1: the picture as UIImage
+
+    */
     func userPictureWork() ->Promise<[AnyObject]> {
         return firstly {
             self.getUserPicture()
             }.then {picture in
                 self.uploadPicture(photo: picture!)
-        }
+            }.then {result in
+                self.createSharingLink(itemId: result[1]as! String, image: result[0]as! UIImage)}
     }
 
+    /**
+      Async func. Get user's profile photo, upload photo to OneDrive, and get sharing link
+     - returns:
+        Promise<UIImage>. The user's profile picture
+     */
     func getUserPicture()->Promise<UIImage?>{
         return Promise{ fulfill, reject in
-            //Get user's profile photo, upload photo to OneDrive, and get sharing link
             let urlRequest = buildRequest(operation: "GET", resource: "photo/$value") as URLRequest
-
             let task = URLSession.shared.dataTask(with:urlRequest){ data , res , err in
                 if let err:Error = err {
                     print(err.localizedDescription)
                     return reject(err)
                 }
-                if ((self.checkResult(result: res!)) != HTTPError.None) {
+                if ((self.checkResult(result: res!)) != HTTPError.NoError) {
                     return reject(HTTPError.InvalidRequest)
                 }
-                
                 if let data = data {
                     if let userImage: UIImage = UIImage(data:data) {
                         return fulfill(userImage)
-
                     } else {
                         return reject("no image" as! Error)
                     }
-
                 }
             }
             task.resume()
         }
-
     }
+    
+    /**
+     Async func. Uploades a UIImage objet to the signed in user's OneDrive root folder
+     - Returns:
+     A Promise encapsulating an array of AnyObject. Element 0 contains the user profile photo obtained in the previous chained async call
+     Element 1 contains the web sharing URL of the photo in OneDrive as a String
+     - Parameters:
+     - UIImage: The image to upload to OneDrive
+     */
+    func uploadPicture(photo: UIImage) -> Promise<[AnyObject]> {
+        return Promise<[AnyObject]>{ fulfill, reject in
+            let uploadRequestUrl = self.buildRequest(operation: "PUT", resource: "drive/root:/me.jpg:/content", content: UIImageJPEGRepresentation(photo, 1.0)!) as URLRequest
+            
+            let task = URLSession.shared.dataTask(with:uploadRequestUrl){ data, res, err in
+                if let err = err{
+                    return reject(err)
+                }
+                if ((self.checkResult(result: res!)) != HTTPError.NoError) {
+                    return reject(HTTPError.InvalidRequest)
+                }
+                
+                //data can be serialized to a DriveItem object
+                //https://developer.microsoft.com/en-us/graph/docs/api-reference/v1.0/resources/driveitem
+                var itemId: String = "";
+                
+                if let responseContent = data {
+                    itemId = self.getValueFromResponse(json: responseContent, key: "id" )
+                    var returnValues = [AnyObject]();
+                    returnValues.append(photo as AnyObject)
+                    returnValues.append(itemId as AnyObject)
+                    return fulfill(returnValues)
+                }
+            }
+            task.resume()
+        }
+    }
+
+    func createSharingLink(itemId: String, image: UIImage) ->Promise<[AnyObject]>{
         
+        return Promise<[AnyObject]>{ fulfill, reject in
+            
+            //Create Data object for the JSON payload
+            
+            if let sharingLinkFilePath = Bundle.main.path(forResource: "CreateSharingLink", ofType: "json")
+               
+            {
+                do {
+                    let sharingLinkcontent = try String(contentsOfFile: sharingLinkFilePath, encoding: String.Encoding.utf8)
+                    let jsonPayload: Data = sharingLinkcontent.data(using: String.Encoding.utf8)!
+                    let uploadRequestUrl = self.buildRequest(operation: "POST", resource: "drive/items/"+itemId+"/createLink", content: jsonPayload) as URLRequest
+                    
+                    let task = URLSession.shared.dataTask(with:uploadRequestUrl){ data, res, err in
+                        if let err = err{
+                            return reject(err)
+                        }
+                        if ((self.checkResult(result: res!)) != HTTPError.NoError) {
+                            return reject(HTTPError.InvalidRequest)
+                        }
+                        
+                        //data can be serialized to a DriveItem object
+                        //https://developer.microsoft.com/en-us/graph/docs/api-reference/v1.0/resources/driveitem
+                        var sharingLink: String = "";
+                        
+                        if let responseContent = data {
+                            do {
+                                let resultJson = try JSONSerialization.jsonObject(with: responseContent, options: []) as? [String:AnyObject]
+                                sharingLink = (OneDriveFileLink.init(json:resultJson!)?.webUrl)!
+
+                            } catch let error as NSError {
+                                print(error)
+                            }
+                            var returnValues = [AnyObject]();
+                            returnValues.append(image as AnyObject)
+                            returnValues.append(sharingLink as AnyObject)
+                            return fulfill(returnValues)
+                        }
+                    }
+                    task.resume()
+
+                }
+            }
+            
+        }
+
+
+        
+    }
+    // MARK: HTTPS helper functions
+    
+    /**
+     Gets the HTTP status code from an URLResponse and returns a custom HTTPError set to an emuneration from
+     expected HTTP codes
+     - Returns:
+     Custom HTTPError object of type Error
+     - Parameters
+        - URLResponse: The response to an HTTPRequest
+     */
     func checkResult(result: URLResponse) -> HTTPError? {
-        var returnValue:HTTPError = HTTPError.None
+        var returnValue:HTTPError = HTTPError.NoError
         var statusCode: Int  = 0;
         if let httpresponse = result as? HTTPURLResponse{
             statusCode = httpresponse.statusCode
@@ -141,59 +244,55 @@ class SendMailViewController : UIViewController {
         if (responseCodeString != "Success") {
             print(returnValue)
         }
+        
         return returnValue
     }
-    func uploadPicture(photo: UIImage) -> Promise<[AnyObject]> {
-        return Promise<[AnyObject]>{ fulfill, reject in
-            let uploadRequestUrl = self.buildRequest(operation: "PUT", resource: "drive/root:/me.jpg:/content", content: UIImageJPEGRepresentation(photo, 1.0)!) as URLRequest
-
-            let task = URLSession.shared.dataTask(with:uploadRequestUrl){ data, res, err in
-                if let err = err{
-                    return reject(err)
-                }
-                if ((self.checkResult(result: res!)) != HTTPError.None) {
-                    return reject(HTTPError.InvalidRequest)
-                }
-
-                //data can be serialized to a DriveItem object
-                //https://developer.microsoft.com/en-us/graph/docs/api-reference/v1.0/resources/driveitem
-                var statusTextString: String = "";
-
-                if let responseContent = data {
-                    statusTextString = self.jsonToString(json: responseContent )
-                    var returnValues = [AnyObject]();
-                    returnValues.append(photo as AnyObject)
-                    returnValues.append(statusTextString as AnyObject)
-                    return fulfill(returnValues)
-                }
-            }
-            task.resume()
-        }
-    }
-
     
-    func jsonToString(json: Data) -> String {
+
+    /**
+     Gets a value from a JSON key/value pair by using the key parameter.
+     - returns:
+     The desired value as String
+     
+     - parameters:
+        - Data: The JSON data to extract value from
+        - String: The desired key
+     */
+    func getValueFromResponse(json: Data, key:String) -> String {
         var returnValue: String = " ";
             do {
                 let resultJson = try JSONSerialization.jsonObject(with: json, options: []) as? [String:AnyObject]
-                if let dictionary = resultJson as? [String: Any] {
-                    let sharingurl:String = dictionary["webUrl"] as! String
-                    print(sharingurl)
-                    returnValue = sharingurl
-                }
+                returnValue = self.getValueFromJsonObject(key: key, jsonObject: resultJson!)
             } catch let error as NSError {
                 print(error)
             }
         return returnValue;
     }
     
+    func getValueFromJsonObject(key:String, jsonObject: [String:AnyObject]) -> String{
+        
+        var returnValue: String = " "
+        let jsonValue = jsonObject[key]
+        if let stringArray = jsonValue as? [String:AnyObject] {
+          _ =  self.getValueFromJsonObject(key: key, jsonObject: stringArray)
+        }
+        else {
+            returnValue = jsonValue as! String
+        }
+        return returnValue
+
+    }
     // MARK: IBActions
+    
+    /**
+     Created an email message and sends it to a REST endpoint
+     */
     @IBAction func sendMail(_ sender: AnyObject) {
         // Fetch content from file
         updateUI(showActivityIndicator: true, statusText: "Sending")
         
         if let uploadContent = mailContent() {
-            sendMailRestWithContent(uploadContent)
+            sendMailRESTWithContent(uploadContent)
         }
         else {
             updateUI(showActivityIndicator: false,
@@ -203,7 +302,7 @@ class SendMailViewController : UIViewController {
     
     
     
-    // MARK: Helper methods
+    // MARK: REST mail helper methods
     
     /**
      Prepare mail content by loading the files from resources and replacing placeholders with the
@@ -223,10 +322,15 @@ class SendMailViewController : UIViewController {
                 emailValidBody = emailBodyRaw.replacingOccurrences(of: "\"", with: "\\\"")
                 emailValidBody = emailValidBody.replacingOccurrences(of: "a href=%s", with: ("a href=" + self.userPictureUrl!))
                 
+                let imageData: NSData = UIImagePNGRepresentation(self.userProfilePicture!)! as NSData;
                 
                 let emailPostContent = emailContent.replacingOccurrences(of: "<EMAIL>", with: self.emailTextField.text!)
                     .replacingOccurrences(of: "<CONTENTTYPE>", with: "HTML")
                     .replacingOccurrences(of: "<CONTENT>", with: emailValidBody)
+                    .replacingOccurrences(of: "<ODATA.TYPE>", with: "#microsoft.graph.fileAttachment")
+                    .replacingOccurrences(of: "<IMAGE.TYPE>", with: "image\\/png")
+                    .replacingOccurrences(of: "<CONTENTBYTES>", with: imageData.base64EncodedString())
+                    .replacingOccurrences(of: "<NAME>", with: "me.png")
                 
                 return emailPostContent.data(using: String.Encoding.utf8)
             }
@@ -239,17 +343,27 @@ class SendMailViewController : UIViewController {
         return nil
     }
     
-    func sendMailRestWithContent(_ content: Data) {
+    /**
+     POSTS a new message to the sendmail resource
+     - parameters:
+        - Data: The body of the message
+     */
+    func sendMailRESTWithContent(_ content: Data) {
         let _ = self.sendCRUDMessage(resource: "microsoft.graph.sendmail",
                                      operation: "POST",
                                      content: content)
     }
     
-    
     /**
      Send a create, read, update, delete (CRUD) nessage.
      Create= POST, Update= PUT, Delete= DELETE.
      Read= GET. Use sendGETMessage(resource: String) to read Graph contents
+     - returns:
+     JSON response as Data
+     - parameters:
+        - String: The REST resource receiving the CRUD request
+        - String: the REST operation requested
+        - Data: The json (as Data) representing the values to update
      */
     func sendCRUDMessage(resource: String, operation:String, content: Data)->Data  {
         
@@ -261,15 +375,8 @@ class SendMailViewController : UIViewController {
             if (operation == "GET") {
                 return self.sendGETMessage(resource: resource)
             }
-            let request = NSMutableURLRequest(url: URL(string: "https://graph.microsoft.com/v1.0/me/" + resource)!)
-            request.httpMethod = operation;
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.setValue("application/json, text/plain, */*", forHTTPHeaderField: "Accept")
             
-            let accessToken = AuthenticationClass.sharedInstance?.accessToken
-            request.setValue("Bearer \(accessToken!)" as String, forHTTPHeaderField: "Authorization")
-            request.httpBody = content
-            
+            let request = self.buildRequest(operation: operation, resource: resource, content:content);
             
             let task = URLSession.shared.dataTask(with:request as URLRequest, completionHandler:{ data, res, err in
                 if let err = err{
@@ -277,22 +384,27 @@ class SendMailViewController : UIViewController {
                              statusText: "Error assembling the mail content." + err.localizedDescription)
                 }
                 let nttpError = self.checkResult(result: res!)
-                if (nttpError != HTTPError.None) {
+                if (nttpError != HTTPError.NoError) {
                     self.updateUI(showActivityIndicator: false,
-                                  statusText: "Error sending the mail." +  (nttpError?.localizedDescription)!)
-                    
+                                  statusText: "Error sending the mail." )
                 }
-                
+                else {
+                    self.updateUI(showActivityIndicator: false, statusText: "")
+                }
             }) // let task
-            
              task.resume()
-            
-            
-            
         }
         return returnData;
         
     }
+    
+    
+    /**
+     Creates an URLRequest with the operation and resource parameters
+    
+     - returns:
+        - NSURLRequest
+     */
     func buildRequest(operation: String, resource:String) -> NSURLRequest {
         let request = NSMutableURLRequest(url: URL(string: "https://graph.microsoft.com/v1.0/me/" + resource)!)
         request.httpMethod = operation;
@@ -304,35 +416,33 @@ class SendMailViewController : UIViewController {
         return request as NSURLRequest
     }
 
+    /**
+     Createsan URLRequest with JSON body using operation, resource, and content parameters
+     
+     -returns:
+        - NSURLREQUEST
+     */
     func buildRequest(operation: String, resource:String, content: Data) -> NSURLRequest {
-        let request = NSMutableURLRequest(url: URL(string: "https://graph.microsoft.com/v1.0/me/" + resource)!)
-        request.httpMethod = operation;
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("application/json, text/plain, */*", forHTTPHeaderField: "Accept")
-        
-        let accessToken = AuthenticationClass.sharedInstance?.accessToken
-        request.setValue("Bearer \(accessToken!)" as String, forHTTPHeaderField: "Authorization")
-        request.httpBody = content
-        return request as NSURLRequest
+        let mutableRequest: NSMutableURLRequest = self.buildRequest(operation: operation, resource:resource) as! NSMutableURLRequest;
+        mutableRequest.httpBody = content
+        return mutableRequest as NSURLRequest
     }
 
 
     
     /**
      Sends a GET request. Internal helper method is only called by SendCRUDRequest()
+     
+     - returns:
+     Data. The response returned by the GET request
+     - parameters:
+        - String: The resource to request the GET operation on
      */
     func sendGETMessage(resource: String) -> Data {
         var returnData: Data;
         returnData = Data.init();
         
-        let request = NSMutableURLRequest(url: URL(string: "https://graph.microsoft.com/v1.0/me/" + resource)!)
-        request.httpMethod = "GET"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("application/json, text/plain, */*", forHTTPHeaderField: "Accept")
-        
-        let accessToken = AuthenticationClass.sharedInstance?.accessToken
-        request.setValue("Bearer \(accessToken!)" as String, forHTTPHeaderField: "Authorization")
-        
+        let request = self.buildRequest(operation: "GET", resource: resource)
         
         let task = URLSession.shared.dataTask(with:request as URLRequest, completionHandler: {
             (data, response, error) in
@@ -347,6 +457,7 @@ class SendMailViewController : UIViewController {
             
             if statusCode == 202 {
                 self.updateUI(showActivityIndicator: false, statusText: self.successString)
+                returnData = data!;
             }
             else {
                 print("response: \(response!)")
@@ -360,19 +471,19 @@ class SendMailViewController : UIViewController {
         return returnData;
     }
     
-    
+    /**
+     Calls into the AuthenticationClass to get an access token for the user.  Authentication class handles the mechanics of
+     authenticating the user.
+     - returns:
+     True if the user is authenticated and an access token is returned.
+     */
     func connectToGraph() -> Bool {
-        
-        //        if  ((AuthenticationClass.sharedInstance?.accessToken) != ""){
-        //            return true;
-        //        }
         
         // Acquire an access token, if logged in already, this shouldn't bring up an authentication window.
         // However, if the token is expired, user will be asked to sign in again.
         var authenticated: Bool;
         authenticated = ((AuthenticationClass.sharedInstance?.connectToGraph(scopes: ApplicationConstants.kScopes) {
             (result: ApplicationConstants.MSGraphError?, accessToken: String) -> Bool in
-            
             
             if  ((AuthenticationClass.sharedInstance?.accessToken) == nil){
                 // Upon failure, alert and go back.
