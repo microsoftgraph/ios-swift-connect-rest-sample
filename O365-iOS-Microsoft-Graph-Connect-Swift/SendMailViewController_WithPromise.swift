@@ -78,9 +78,9 @@ class SendMailViewController : UIViewController {
      Asynchronous
        returns501 (Not implemented) for msa accounts
      Gets the authenticated user's profile picture, uploads it to the user's OneDrive root folder,
-     Gets the web url sharing link to the uploaded photo.
+     Requests a new web url sharing link to the uploaded photo.
      - returns:
-     A Promise wrapping an array of AnyObject. Element 0: the sharing url. Element 1: the picture as UIImage
+        A Promise wrapping an array of AnyObject. Element 0: the sharing url. Element 1: the picture as UIImage
 
     */
     func userPictureWork() ->Promise<[AnyObject]> {
@@ -88,8 +88,8 @@ class SendMailViewController : UIViewController {
             self.getUserPicture()
             }.then {picture in
                 self.uploadPicture(photo: picture!)
-            }.then {result in
-                self.createSharingLink(itemId: result[1]as! String, image: result[0]as! UIImage)}
+            }.then {DriveItem in
+                self.createSharingLink(itemId: DriveItem[1]as! String, image: DriveItem[0]as! UIImage)}
     }
 
     /**
@@ -121,10 +121,10 @@ class SendMailViewController : UIViewController {
     }
     
     /**
-     Async func. Uploades a UIImage objet to the signed in user's OneDrive root folder
+     Async func. Uploades a UIImage object to the signed in user's OneDrive root folder
      - Returns:
-     A Promise encapsulating an array of AnyObject. Element 0 contains the user profile photo obtained in the previous chained async call
-     Element 1 contains the web sharing URL of the photo in OneDrive as a String
+        A Promise encapsulating an array of AnyObject. Element 0 contains the user profile photo obtained in the previous chained async call
+        Element 1 contains the web sharing URL of the photo in OneDrive as a String
      - Parameters:
      - UIImage: The image to upload to OneDrive
      */
@@ -156,6 +156,11 @@ class SendMailViewController : UIViewController {
         }
     }
 
+    /**
+     Async func. Requests a new sharing link for the OneDrive item specified by the item id.
+     - returns:
+     - Promise<String: AnyObject>. The new sharing link and the image wrapped in a Promise
+     */
     func createSharingLink(itemId: String, image: UIImage) ->Promise<[AnyObject]>{
         
         return Promise<[AnyObject]>{ fulfill, reject in
@@ -168,7 +173,8 @@ class SendMailViewController : UIViewController {
                 do {
                     let sharingLinkcontent = try String(contentsOfFile: sharingLinkFilePath, encoding: String.Encoding.utf8)
                     let jsonPayload: Data = sharingLinkcontent.data(using: String.Encoding.utf8)!
-                    let uploadRequestUrl = self.buildRequest(operation: "POST", resource: "drive/items/"+itemId+"/createLink", content: jsonPayload) as URLRequest
+                    let uploadRequestUrl = self.buildRequest(
+                        operation: "POST", resource: "drive/items/"+itemId+"/createLink", content: jsonPayload) as URLRequest
                     
                     let task = URLSession.shared.dataTask(with:uploadRequestUrl){ data, res, err in
                         if let err = err{
@@ -184,7 +190,8 @@ class SendMailViewController : UIViewController {
                         
                         if let responseContent = data {
                             do {
-                                let resultJson = try JSONSerialization.jsonObject(with: responseContent, options: []) as? [String:AnyObject]
+                                let resultJson = try JSONSerialization.jsonObject(
+                                    with: responseContent, options: []) as? [String:AnyObject]
                                 sharingLink = (OneDriveFileLink.init(json:resultJson!)?.webUrl)!
 
                             } catch let error as NSError {
@@ -423,7 +430,8 @@ class SendMailViewController : UIViewController {
         - NSURLREQUEST
      */
     func buildRequest(operation: String, resource:String, content: Data) -> NSURLRequest {
-        let mutableRequest: NSMutableURLRequest = self.buildRequest(operation: operation, resource:resource) as! NSMutableURLRequest;
+        let mutableRequest: NSMutableURLRequest = self.buildRequest(
+            operation: operation, resource:resource) as! NSMutableURLRequest;
         mutableRequest.httpBody = content
         return mutableRequest as NSURLRequest
     }
@@ -490,7 +498,9 @@ class SendMailViewController : UIViewController {
                 let localizedDescription: String = ApplicationConstants.MSGraphError.nsErrorType(error: result! as NSError).localizedDescription
                 print(localizedDescription)
                 
-                let alertController = UIAlertController(title: "Error", message: ApplicationConstants.MSGraphError.nsErrorType(error: result! as NSError).localizedDescription, preferredStyle: .alert)
+                let alertController = UIAlertController(
+                    title: "Error", message: ApplicationConstants.MSGraphError.nsErrorType(
+                        error: result! as NSError).localizedDescription, preferredStyle: .alert)
                 alertController.addAction(UIAlertAction(title: "Close", style: .destructive, handler: {
                     (action) -> Void in
                     AuthenticationClass.sharedInstance?.disconnect()
