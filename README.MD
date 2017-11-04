@@ -11,8 +11,15 @@ Connecting to Microsoft Office 365 is the first step every iOS app must take to 
      > Note: If you already have a subscription, the previous link sends you to a page with the message *Sorry, you can’t add that to your current account*. In that case, use an account from your current Office 365 subscription.
 * A client id (application id) of an application registered in Azure. This sample application must be granted the **Send mail as a user** permission for **Microsoft Graph**. To create the registration, see [Grant permissions to the Connect application in Azure](https://github.com/microsoftgraph/ios-swift-connect-rest-sample/wiki/Grant-permissions-to-the-Connect-application-in-Azure).
 
->**Note:** The sample was tested on Xcode 8.2.1. This sample supports Xcode 8 and iOS10, which uses the Swift 3.0 framework.
+>**Note:** The sample was tested on Xcode 9.1. This sample supports Xcode 8+ and iOS 10, which uses the Swift 3.0+ framework.
 
+## Connect sample features
+This sample demonstrates several REST calls to the Microsoft Graph REST endpoint. 
+
+- [GETs the signed in user's profile photo](https://developer.microsoft.com/en-us/graph/docs/api-reference/v1.0/api/profilephoto_get) from the *user* endpoint.
+- PUT request to [upload the profile photo to the user's OneDrive root folder](https://developer.microsoft.com/en-us/graph/docs/api-reference/v1.0/api/driveitem_put_content) 
+- POST a request to OneDrive to [create a sharing link for a drive item](https://developer.microsoft.com/en-us/graph/docs/api-reference/v1.0/api/driveitem_createlink) to give other user's access to the uploaded photo
+- POSTS a request to [send a mail message](https://developer.microsoft.com/en-us/graph/docs/api-reference/v1.0/api/user_sendmail) with a photo attachment
        
 ## Running this sample in Xcode
 
