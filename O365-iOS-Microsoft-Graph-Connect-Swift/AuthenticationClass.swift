@@ -53,7 +53,6 @@ class AuthenticationClass {
     func connectToGraph(scopes: [String],
                         completion:@escaping (_ error: ApplicationConstants.MSGraphError?, _ accessToken: String) -> Bool)  {
         
-        var accessToken = String()
         do {
             if let initError = self.lastInitError {
                 if initError.lengthOfBytes(using: String.Encoding.ascii) > 1 {
@@ -73,7 +72,7 @@ class AuthenticationClass {
                     
                     if error == nil {
                         self.accessToken = (result?.accessToken)!
-                        _ = completion(nil, accessToken);
+                        _ = completion(nil, self.accessToken);
                         
                         
                     } else {
@@ -94,8 +93,8 @@ class AuthenticationClass {
                 
                 authenticationProvider.acquireToken(forScopes: scopes) { (result, error) in
                     if error == nil {
-                        accessToken = (result?.accessToken)!
-                        var _ = completion(nil, accessToken);
+                        self.accessToken = (result?.accessToken)!
+                        var _ = completion(nil, self.accessToken);
                         
                         
                     } else  {
