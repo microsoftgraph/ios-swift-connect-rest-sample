@@ -67,6 +67,9 @@ class SendMailViewController : UIViewController {
                     self.userProfilePicture = (result[0] as! UIImage)
                     self.updateUI(showActivityIndicator: false, statusText: "")
 
+            }.catch{err -> Void  in
+                self.updateUI(showActivityIndicator: false, statusText: "")
+
             }
         } catch _ as NSError{
             self.updateUI(showActivityIndicator: false,
