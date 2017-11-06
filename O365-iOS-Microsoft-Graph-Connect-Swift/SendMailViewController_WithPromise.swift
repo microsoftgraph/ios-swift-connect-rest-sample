@@ -58,22 +58,22 @@ class SendMailViewController : UIViewController {
             self.userEmailAddress = self.emailTextField.text
             self.headerLabel.text = "Hi, \(self.userName! )"
             
-            updateUI(showActivityIndicator: true, statusText: "Getting picture")
+            updateUI(showActivityIndicator: true, statusText: "Getting picture", sendMail: false)
 
             //Important: Break out of async promise chain by declaring result returns Void
             _ = self.userPictureWork().then{
                 result -> Void in
                     self.userPictureUrl = (result[1] as! String)
                     self.userProfilePicture = (result[0] as! UIImage)
-                    self.updateUI(showActivityIndicator: false, statusText: "")
+                    self.updateUI(showActivityIndicator: false, statusText: "", sendMail: true)
 
             }.catch{err -> Void  in
-                self.updateUI(showActivityIndicator: false, statusText: "")
+                self.updateUI(showActivityIndicator: false, statusText: "", sendMail: false)
 
             }
         } catch _ as NSError{
             self.updateUI(showActivityIndicator: false,
-                          statusText: "Error getting user profile picture.")
+                          statusText: "Error getting user profile picture.", sendMail: false)
         }
     }
 
@@ -299,14 +299,14 @@ class SendMailViewController : UIViewController {
      */
     @IBAction func sendMail(_ sender: AnyObject) {
         // Fetch content from file
-        updateUI(showActivityIndicator: true, statusText: "Sending")
+        updateUI(showActivityIndicator: true, statusText: "Sending", sendMail: false)
         
         if let uploadContent = mailContent() {
             sendMailRESTWithContent(uploadContent)
         }
         else {
             updateUI(showActivityIndicator: false,
-                     statusText: "Error assembling the mail content.")
+                     statusText: "Error assembling the mail content.", sendMail: true)
         }
     }
     
@@ -391,15 +391,15 @@ class SendMailViewController : UIViewController {
             let task = URLSession.shared.dataTask(with:request as URLRequest, completionHandler:{ data, res, err in
                 if let err = err{
                     self.updateUI(showActivityIndicator: false,
-                             statusText: "Error assembling the mail content." + err.localizedDescription)
+                             statusText: "Error assembling the mail content." + err.localizedDescription, sendMail: false)
                 }
                 let nttpError = self.checkResult(result: res!)
                 if (nttpError != HTTPError.NoError) {
                     self.updateUI(showActivityIndicator: false,
-                                  statusText: "Error sending the mail." )
+                                  statusText: "Error sending the mail.", sendMail: false)
                 }
                 else {
-                    self.updateUI(showActivityIndicator: false, statusText: "")
+                    self.updateUI(showActivityIndicator: false, statusText: "", sendMail: true)
                 }
             }) // let task
              task.resume()
@@ -460,20 +460,20 @@ class SendMailViewController : UIViewController {
             
             if let _ = error {
                 print(error as Any )
-                self.updateUI(showActivityIndicator: false, statusText: self.failureString)
+                self.updateUI(showActivityIndicator: false, statusText: self.failureString, sendMail: false)
                 return
             }
             
             let statusCode = (response as! HTTPURLResponse).statusCode
             
             if statusCode == 202 {
-                self.updateUI(showActivityIndicator: false, statusText: self.successString)
+                self.updateUI(showActivityIndicator: false, statusText: self.successString, sendMail: true)
                 returnData = data!;
             }
             else {
                 print("response: \(response!)")
                 print(String(data: data!, encoding: String.Encoding.utf8) as Any )
-                self.updateUI(showActivityIndicator: false, statusText: self.failureString)
+                self.updateUI(showActivityIndicator: false, statusText: self.failureString, sendMail: false)
             }
         }) // let task
         
@@ -523,16 +523,16 @@ class SendMailViewController : UIViewController {
     }
     
     func updateUI(showActivityIndicator: Bool,
-                  statusText: String? = nil) {
+                  statusText: String? = nil, sendMail: Bool) {
         if showActivityIndicator {
             DispatchQueue.main.async(execute: { () -> Void in
-                self.sendMailButton.isEnabled = false
+                self.sendMailButton.isEnabled = sendMail
                 self.activityIndicator.startAnimating()
             })
         }
         else {
             DispatchQueue.main.async(execute: { () -> Void in
-                self.sendMailButton.isEnabled = true
+                self.sendMailButton.isEnabled = sendMail
                 self.activityIndicator.stopAnimating()
             })
         }
