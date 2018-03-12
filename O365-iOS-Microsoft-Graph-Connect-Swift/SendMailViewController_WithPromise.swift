@@ -58,7 +58,7 @@ class SendMailViewController : UIViewController {
             self.userEmailAddress = self.emailTextField.text
             self.headerLabel.text = "Hi, \(self.userName! )"
             
-            updateUI(showActivityIndicator: true, statusText: "Getting picture", sendMail: false)
+            updateUI(showActivityIndicator: true, statusText: "Getting picture", sendMail: true)
 
             //Important: Break out of async promise chain by declaring result returns Void
             _ = self.userPictureWork().then{
@@ -109,20 +109,32 @@ class SendMailViewController : UIViewController {
                     return reject(err)
                 }
                 if ((self.checkResult(result: res!)) != HTTPError.NoError) {
-                    return reject(HTTPError.InvalidRequest)
+                    return fulfill(self.getDefaultPicture())
                 }
                 if let data = data {
                     if let userImage: UIImage = UIImage(data:data) {
+                        self.userProfilePicture = userImage
                         return fulfill(userImage)
                     } else {
                         return reject("no image" as! Error)
                     }
+                } else {
+                    return fulfill(self.getDefaultPicture())
                 }
             }
             task.resume()
         }
     }
     
+    func getDefaultPicture() ->UIImage {
+        var returnImage:UIImage!
+        if let userImage: UIImage = UIImage(named: "test") {
+            self.userProfilePicture = userImage
+            returnImage = userImage
+        }
+
+        return returnImage
+    }
     /**
      Async func. Uploades a UIImage object to the signed in user's OneDrive root folder
      - Returns:
@@ -306,7 +318,7 @@ class SendMailViewController : UIViewController {
         }
         else {
             updateUI(showActivityIndicator: false,
-                     statusText: "Error assembling the mail content.", sendMail: true)
+                     statusText: "Error assembling the mail content.", sendMail: false)
         }
     }
     
@@ -526,13 +538,13 @@ class SendMailViewController : UIViewController {
                   statusText: String? = nil, sendMail: Bool) {
         if showActivityIndicator {
             DispatchQueue.main.async(execute: { () -> Void in
-                self.sendMailButton.isEnabled = sendMail
+                self.sendMailButton.isEnabled = false
                 self.activityIndicator.startAnimating()
             })
         }
         else {
             DispatchQueue.main.async(execute: { () -> Void in
-                self.sendMailButton.isEnabled = sendMail
+                self.sendMailButton.isEnabled = true
                 self.activityIndicator.stopAnimating()
             })
         }

@@ -52,7 +52,7 @@
             <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
             <key>CFBundleURLSchemes</key>
             <array>
-                <string>msalENTER_CLIENT_ID_HERE</string>
+                <string>msal598f17e0-b477-483a-b5a9-fe8be73c0458</string>
                 <string>auth</string>
             </array>
         </dict>
