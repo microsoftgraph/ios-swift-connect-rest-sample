@@ -79,7 +79,7 @@ class SendMailViewController : UIViewController {
 
     /**
      Asynchronous
-       returns501 (Not implemented) for msa accounts
+       returns 501 (Not implemented) for msa accounts
      Gets the authenticated user's profile picture, uploads it to the user's OneDrive root folder,
      Requests a new web url sharing link to the uploaded photo.
      - returns:
@@ -136,7 +136,7 @@ class SendMailViewController : UIViewController {
         return returnImage
     }
     /**
-     Async func. Uploades a UIImage object to the signed in user's OneDrive root folder
+     Async func. Uploads a UIImage object to the signed in user's OneDrive root folder
      - Returns:
         A Promise encapsulating an array of AnyObject. Element 0 contains the user profile photo obtained in the previous chained async call
         Element 1 contains the web sharing URL of the photo in OneDrive as a String
