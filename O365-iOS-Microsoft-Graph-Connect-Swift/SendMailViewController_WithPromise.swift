@@ -377,7 +377,7 @@ class SendMailViewController : UIViewController {
     }
     
     /**
-     Send a create, read, update, delete (CRUD) nessage.
+     Send a create, read, update, delete (CRUD) message.
      Create= POST, Update= PUT, Delete= DELETE.
      Read= GET. Use sendGETMessage(resource: String) to read Graph contents
      - returns:
@@ -502,7 +502,7 @@ class SendMailViewController : UIViewController {
      */
     func connectToGraph() -> Bool {
         
-        // Acquire an access token, if logged in already, this shouldn't bring up an authentication window.
+        // Acquire an access token. If logged in already, this shouldn't bring up an authentication window.
         // However, if the token is expired, user will be asked to sign in again.
         var authenticated: Bool;
         authenticated = ((AuthenticationClass.sharedInstance?.connectToGraph(scopes: ApplicationConstants.kScopes) {
