@@ -24,7 +24,7 @@ This sample demonstrates several REST calls to the Microsoft Graph REST endpoint
 ## Running this sample in Xcode
 
 1. Clone this repository
-2. Use [Carthage](https://github.com/Carthage/Carthage) to import the Microsoft Authenticaion Library (MSAL) iOS dependency. Download the latest version of Carthage [here](https://github.com/Carthage/Carthage/releases).
+2. [Install Carthage](https://github.com/Carthage/Carthage/blob/master/README.md#installing-carthage) to import the Microsoft Authentication Library (MSAL) iOS dependency. Download the latest version of Carthage [here](https://github.com/Carthage/Carthage/releases).
 
 ### Build the MSAL framework
 
