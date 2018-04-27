@@ -79,7 +79,7 @@ class SendMailViewController : UIViewController {
 
     /**
      Asynchronous
-       returns501 (Not implemented) for msa accounts
+       returns 501 (Not implemented) for msa accounts
      Gets the authenticated user's profile picture, uploads it to the user's OneDrive root folder,
      Requests a new web url sharing link to the uploaded photo.
      - returns:
@@ -136,7 +136,7 @@ class SendMailViewController : UIViewController {
         return returnImage
     }
     /**
-     Async func. Uploades a UIImage object to the signed in user's OneDrive root folder
+     Async func. Uploads a UIImage object to the signed in user's OneDrive root folder
      - Returns:
         A Promise encapsulating an array of AnyObject. Element 0 contains the user profile photo obtained in the previous chained async call
         Element 1 contains the web sharing URL of the photo in OneDrive as a String
@@ -377,7 +377,7 @@ class SendMailViewController : UIViewController {
     }
     
     /**
-     Send a create, read, update, delete (CRUD) nessage.
+     Send a create, read, update, delete (CRUD) message.
      Create= POST, Update= PUT, Delete= DELETE.
      Read= GET. Use sendGETMessage(resource: String) to read Graph contents
      - returns:
@@ -502,7 +502,7 @@ class SendMailViewController : UIViewController {
      */
     func connectToGraph() -> Bool {
         
-        // Acquire an access token, if logged in already, this shouldn't bring up an authentication window.
+        // Acquire an access token. If logged in already, this shouldn't bring up an authentication window.
         // However, if the token is expired, user will be asked to sign in again.
         var authenticated: Bool;
         authenticated = ((AuthenticationClass.sharedInstance?.connectToGraph(scopes: ApplicationConstants.kScopes) {
