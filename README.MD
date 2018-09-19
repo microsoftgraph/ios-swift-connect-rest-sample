@@ -31,7 +31,7 @@ This sample demonstrates several REST calls to the Microsoft Graph REST endpoint
 The preview version of MSAL is distributed as source code using Carthage. To build the source code, do these steps:
 
 1. Open the Bash terminal and go to the app root folder.
-2. Create a **cartfile**: Copy `echo "github \"AzureAD/microsoft-authentication-library-for-objc\" \"master\"" > Cartfile`  into the terminal and run the command.
+2. Create a **cartfile**: Copy `echo "github \"AzureAD/microsoft-authentication-library-for-objc\" == 0.1.3" > Cartfile`  into the terminal and run the command.
 3. Build the MSAL library: Copy `carthage update` into the terminal and run the command.        
 
 ### Update the sample with your client id
@@ -50,7 +50,6 @@ The preview version of MSAL is distributed as source code using Carthage. To bui
             <key>CFBundleURLSchemes</key>
             <array>
                 <string>msalENTER_CLIENT_ID_HERE</string>
-                <string>auth</string>
             </array>
         </dict>
     </array>
