@@ -29,11 +29,11 @@ class AuthenticationClass {
                 fatalError("Invalid Redirect URL")
             }
 
-            let kClientId = redirectUrl.substring(from: msalRange.upperBound)
+            let kClientId = String(redirectUrl[msalRange.upperBound...])
 
             authenticationProvider = try MSALPublicClientApplication.init(clientId: kClientId,
                                                                           authority: ApplicationConstants.kAuthority)
-        } catch  let error as NSError {
+        } catch let error as NSError {
             self.lastInitError = error.userInfo.description
             authenticationProvider = MSALPublicClientApplication.init()
         }

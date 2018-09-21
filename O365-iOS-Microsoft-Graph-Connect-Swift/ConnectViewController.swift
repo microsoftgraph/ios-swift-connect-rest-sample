@@ -64,11 +64,11 @@ private extension ConnectViewController {
         DispatchQueue.main.async {
             if show {
                 self.activityIndicator.startAnimating()
-                self.connectButton.setTitle(NSLocalizedString("CONNECTING", comment: ""), for: UIControlState())
+                self.connectButton.setTitle(NSLocalizedString("CONNECTING", comment: ""), for: .normal)
                 self.connectButton.isEnabled = false
             } else {
                 self.activityIndicator.stopAnimating()
-                self.connectButton.setTitle(NSLocalizedString("CONNECT", comment: ""), for: UIControlState())
+                self.connectButton.setTitle(NSLocalizedString("CONNECT", comment: ""), for: .normal)
                 self.connectButton.isEnabled = true
             }
         }

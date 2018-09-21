@@ -13,7 +13,6 @@ import PromiseKit
  be modified.
  
  */
-
 class SendMailViewController: UIViewController {
     enum HTTPError: Error {
         typealias ErrorCode = Int
@@ -126,8 +125,9 @@ class SendMailViewController: UIViewController {
                     return reject(err)
                 }
 
-                if self.checkResult(result: res!) != .noError {
-                    return fulfill(self.getDefaultPicture())
+                guard self.checkResult(result: res!) == .noError else {
+                    fulfill(self.getDefaultPicture())
+                    return
                 }
 
                 guard let data = data else {
@@ -163,7 +163,7 @@ class SendMailViewController: UIViewController {
         return Promise { fulfill, reject in
             let uploadRequestUrl = self.buildRequest(operation: "PUT",
                                                      resource: "drive/root:/me.jpg:/content",
-                                                     withBody: UIImageJPEGRepresentation(photo, 1.0)!)
+                                                     withBody: photo.jpegData(compressionQuality: 1.0)!)
             
             URLSession.shared.dataTask(with: uploadRequestUrl) { data, res, err in
                 if let err = err {
@@ -318,7 +318,7 @@ class SendMailViewController: UIViewController {
                 .replacingOccurrences(of: "\"", with: "\\\"")
                 .replacingOccurrences(of: "a href=%s", with: ("a href=" + self.userPictureUrl!))
 
-            let imageData = UIImagePNGRepresentation(self.userProfilePicture!)!
+            let imageData = self.userProfilePicture!.jpegData(compressionQuality: 1.0)!
 
             let emailPostContent = emailContent
                 .replacingOccurrences(of: "<EMAIL>", with: self.emailTextField.text!)
