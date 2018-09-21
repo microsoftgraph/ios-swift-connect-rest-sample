@@ -8,6 +8,8 @@
 
 import Foundation
 
+/** Structure of a OneDrive File Link: **/
+/**------------------------------------**/
 //{
 //    "id": "123ABC",
 //    "roles": ["write"],
@@ -22,27 +24,25 @@ import Foundation
 //    }
 //}
 
-
 struct OneDriveFileLink {
     let id: String
     let roles: [String]
     let link: [String: Any]
     let webUrl: String
 }
+
 extension OneDriveFileLink {
     init?(json: [String: Any]) {
         guard let id = json["id"] as? String,
-            let link = json["link"] as? [String: Any],
-            let roles = json["roles"] as? [String],
-            let webUrl = link["webUrl"] as? String
-        else  {
-                return nil
+              let link = json["link"] as? [String: Any],
+              let roles = json["roles"] as? [String],
+              let webUrl = link["webUrl"] as? String else {
+            return nil
         }
+
         self.id = id
         self.roles = roles
         self.link = link
         self.webUrl = webUrl
-
     }
-
 }
