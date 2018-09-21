@@ -6,44 +6,39 @@ import Foundation
 import MSAL
 
 class AuthenticationClass {
-    
     // MARK: Properties and variables
     // Singleton class
-    class var sharedInstance: AuthenticationClass? {
-        struct Singleton {
-            static let instance = AuthenticationClass.init()
-        }
-        return Singleton.instance
-    }
+    static let sharedInstance = AuthenticationClass()
 
     var authenticationProvider = MSALPublicClientApplication.init()
     var accessToken: String = ""
-    var lastInitError: String? = ""
+    var lastInitError: String?
     
     init () {
-
         do {
-            
-            //Get the MSAL client Id for this Azure app registration. We store it in the main bundle
-            var redirectUrl: String = "";
-            var myDict: NSDictionary?
-            if let path = Bundle.main.path(forResource: "Info", ofType: "plist") {
-                myDict = NSDictionary(contentsOfFile: path)
+            // Get the MSAL client Id for this Azure app registration. We store it in the main bundle
+            guard let path = Bundle.main.path(forResource: "Info", ofType: "plist"),
+                  let dict = NSDictionary(contentsOfFile: path),
+                  let urlTypes = dict.object(forKey: "CFBundleURLTypes") as? NSArray else {
+                fatalError("Can't find MSAL Client ID in your Info.plist")
             }
-            if let dict = myDict {
-                let array: NSArray =  (dict.object(forKey: "CFBundleURLTypes") as? NSArray)!;
-                redirectUrl = getRedirectUrlFromMSALArray(array: array);
+
+            let redirectUrl = getRedirectUrlFromMSALArray(array: urlTypes)
+
+            guard let msalRange = redirectUrl.range(of: "msal") else {
+                fatalError("Invalid Redirect URL")
             }
-            //  var NSRange range = [redirectUrl rangeOfString:@"msal"];
-            let range: Range<String.Index> = redirectUrl.range(of: "msal")!;
-            let kClientId: String = redirectUrl.substring(from: range.upperBound);
-            
-            authenticationProvider = try MSALPublicClientApplication.init(clientId: kClientId, authority: ApplicationConstants.kAuthority)
-        } catch  let error as NSError  {
+
+            let kClientId = redirectUrl.substring(from: msalRange.upperBound)
+
+            authenticationProvider = try MSALPublicClientApplication.init(clientId: kClientId,
+                                                                          authority: ApplicationConstants.kAuthority)
+        } catch  let error as NSError {
             self.lastInitError = error.userInfo.description
             authenticationProvider = MSALPublicClientApplication.init()
         }
     }
+
     /**
      Authenticates to Microsoft Graph.
      If a user has previously signed in before and not disconnected, silent log in
@@ -51,91 +46,68 @@ class AuthenticationClass {
      If not, authentication will ask for credentials
      */
     func connectToGraph(scopes: [String],
-                        completion:@escaping (_ error: ApplicationConstants.MSGraphError?, _ accessToken: String) -> Bool)  {
-        
+                        completion: @escaping (_ error: ApplicationConstants.MSGraphError?,
+                                               _ accessToken: String) -> Void) {
         do {
             if let initError = self.lastInitError {
-                if initError.lengthOfBytes(using: String.Encoding.ascii) > 1 {
-                    throw NSError.init(domain: initError, code: 0, userInfo: nil)
-                }
+                throw NSError.init(domain: initError, code: 0, userInfo: nil)
             }
+
             // We check to see if we have a current logged in user. If we don't, then we need to sign someone in.
             // We throw an interactionRequired so that we trigger the interactive signin.
-            
-            if  try authenticationProvider.users().isEmpty {
-                throw NSError.init(domain: "MSALErrorDomain", code: MSALErrorCode.interactionRequired.rawValue, userInfo: nil)
-            } else {
-                
-                // Acquire a token for an existing user silently
-                
-                try authenticationProvider.acquireTokenSilent(forScopes: scopes, user: authenticationProvider.users().first) { (result, error) in
-                    
-                    if error == nil {
-                        self.accessToken = (result?.accessToken)!
-                        _ = completion(nil, self.accessToken);
-                        
-                        
-                    } else {
-                        
-                        //"Could not acquire token silently: \(error ?? "No error information" as! Error )"
-                       var _ = completion(ApplicationConstants.MSGraphError.nsErrorType(error: error! as NSError), "");
-                        
-                    }
-                }
+
+            guard !(try authenticationProvider.users().isEmpty) else {
+                throw NSError.init(domain: "MSALErrorDomain",
+                                   code: MSALErrorCode.interactionRequired.rawValue,
+                                   userInfo: nil)
             }
-        }  catch let error as NSError {
-            
+
+            // Acquire a token for an existing user silently
+            try authenticationProvider.acquireTokenSilent(forScopes: scopes,
+                                                          user: authenticationProvider.users().first) { result, error in
+                // Could not acquire token silently
+                guard let accessToken = result?.accessToken else {
+                    completion(ApplicationConstants.MSGraphError.nsErrorType(error: error! as NSError), "")
+                    return
+                }
+
+                self.accessToken = accessToken
+                completion(nil, accessToken)
+            }
+        } catch let error {
             // interactionRequired means we need to ask the user to sign-in. This usually happens
             // when the user's Refresh Token is expired or if the user has changed their password
             // among other possible reasons.
-            
-            if error.code == MSALErrorCode.interactionRequired.rawValue {
-                
-                authenticationProvider.acquireToken(forScopes: scopes) { (result, error) in
-                    if error == nil {
-                        self.accessToken = (result?.accessToken)!
-                        var _ = completion(nil, self.accessToken);
-                        
-                        
-                    } else  {
-                        var _ = completion(ApplicationConstants.MSGraphError.nsErrorType(error: error! as NSError), "");
-                        
+            switch (error as NSError).code {
+            case MSALErrorCode.interactionRequired.rawValue:
+                authenticationProvider.acquireToken(forScopes: scopes) { result, error in
+                    guard let accessToken = result?.accessToken else {
+                        completion(ApplicationConstants.MSGraphError.nsErrorType(error: error! as NSError), "")
+                        return
                     }
-                }
-                
-            } else {
-                var _ = completion(ApplicationConstants.MSGraphError.nsErrorType(error: error as NSError), error.localizedDescription);
 
+                    self.accessToken = accessToken
+                    completion(nil, accessToken)
+                }
+            default:
+                completion(ApplicationConstants.MSGraphError.nsErrorType(error: error as NSError),
+                           error.localizedDescription)
             }
-            
-        } catch {
-            
-            // This is the catch all error.
-            
-            
-            var _ = completion(ApplicationConstants.MSGraphError.nsErrorType(error: error as NSError), error.localizedDescription);
-            
         }
     }
+
     func disconnect() {
-        
-        do {
-            try authenticationProvider.remove(authenticationProvider.users().first)
-            
-        } catch _ {
-            
-        }
-        
+        try? authenticationProvider.remove(authenticationProvider.users().first)
     }
     
     // Get client id from bundle
-    
     func getRedirectUrlFromMSALArray(array: NSArray) -> String {
-        let arrayElement: NSDictionary = array.object(at: 0) as! NSDictionary;
-        let redirectArray: NSArray = arrayElement.value(forKeyPath: "CFBundleURLSchemes") as! NSArray;
-        let subString: NSString = redirectArray.object(at: 0) as! NSString;
-        return subString as String;
+        guard let arrayElement = array.object(at: 0) as? NSDictionary,
+              let redirectArray = arrayElement.value(forKeyPath: "CFBundleURLSchemes") as? NSArray,
+              let subString = redirectArray.object(at: 0) as? String else {
+            return ""
+        }
+
+        return subString
     }
-
-
 }
