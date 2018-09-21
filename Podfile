@@ -2,6 +2,6 @@
 platform :ios, '9.0'
 use_frameworks!
 target 'O365-iOS-Microsoft-Graph-Connect-Swift' do
-    pod "PromiseKit", "~> 4.5.2"
+    pod "PromiseKit"
 end
 

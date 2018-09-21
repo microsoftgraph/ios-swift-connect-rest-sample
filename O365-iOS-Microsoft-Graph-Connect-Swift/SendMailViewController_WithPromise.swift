@@ -78,11 +78,14 @@ class SendMailViewController: UIViewController {
             updateUI(showActivityIndicator: true, statusText: "Getting picture", sendMail: true)
 
             //Important: Break out of async promise chain by declaring result returns Void
-            _ = self.userPictureWork()
-                .then { image, url -> Void in
+
+            _ = firstly { self.userPictureWork() }
+                .then { image, url -> Promise<Void> in
                     self.userPictureUrl = url
                     self.userProfilePicture = image
                     self.updateUI(showActivityIndicator: false, statusText: "", sendMail: true)
+
+                    return Promise()
                 }
                 .catch { _ in
                     return self.updateUI(showActivityIndicator: false, statusText: "", sendMail: false)
@@ -117,31 +120,32 @@ class SendMailViewController: UIViewController {
         Promise<UIImage>. The user's profile picture
      */
     func getUserPicture() -> Promise<UIImage?> {
-        return Promise { fulfill, reject in
+        return Promise { resolver in
             let urlRequest = buildRequest(operation: "GET", resource: "photo/$value")
             URLSession.shared.dataTask(with: urlRequest) { data, res, err in
                 if let err = err {
                     print(err.localizedDescription)
-                    return reject(err)
+                    resolver.reject(err)
                 }
 
                 guard self.checkResult(result: res!) == .noError else {
-                    fulfill(self.getDefaultPicture())
+                    resolver.fulfill(self.getDefaultPicture())
                     return
                 }
 
                 guard let data = data else {
-                    fulfill(self.getDefaultPicture())
+                    resolver.fulfill(self.getDefaultPicture())
                     return
                 }
 
                 guard let userImage = UIImage(data: data) else {
-                    reject(HTTPError.invalidRequest)
+                    resolver.reject(HTTPError.invalidRequest)
                     return
                 }
 
                 self.userProfilePicture = userImage
-                return fulfill(userImage)
+                resolver.fulfill(userImage)
+                return
             }.resume()
         }
     }
@@ -160,27 +164,27 @@ class SendMailViewController: UIViewController {
      - UIImage: The image to upload to OneDrive
      */
     func uploadPicture(photo: UIImage) -> Promise<(UIImage, String)> {
-        return Promise { fulfill, reject in
+        return Promise { resolver in
             let uploadRequestUrl = self.buildRequest(operation: "PUT",
                                                      resource: "drive/root:/me.jpg:/content",
                                                      withBody: photo.jpegData(compressionQuality: 1.0)!)
             
             URLSession.shared.dataTask(with: uploadRequestUrl) { data, res, err in
                 if let err = err {
-                    reject(err)
+                    resolver.reject(err)
                     return
                 }
 
                 guard let responseContent = data,
                       self.checkResult(result: res!) == .noError else {
-                    reject(HTTPError.invalidRequest)
+                    resolver.reject(HTTPError.invalidRequest)
                     return
                 }
                 
                 // Data can be serialized to a DriveItem object
                 // https://developer.microsoft.com/en-us/graph/docs/api-reference/v1.0/resources/driveitem
                 let itemId = self.getValueFromResponse(json: responseContent, key: "id")
-                return fulfill((photo, itemId))
+                resolver.fulfill((photo, itemId))
             }.resume()
         }
     }
@@ -191,11 +195,10 @@ class SendMailViewController: UIViewController {
      - Promise<String: AnyObject>. The new sharing link and the image wrapped in a Promise
      */
     func createSharingLink(itemId: String, image: UIImage) -> Promise<(UIImage, String)> {
-        return Promise { fulfill, reject in
-
+        return Promise { resolver in
             // Create Data object for the JSON payload
             guard let sharingLinkFilePath = Bundle.main.path(forResource: "CreateSharingLink", ofType: "json") else {
-                reject(HTTPError.invalidRequest)
+                resolver.reject(HTTPError.invalidRequest)
                 return
             }
 
@@ -208,13 +211,13 @@ class SendMailViewController: UIViewController {
 
                 URLSession.shared.dataTask(with: uploadRequestUrl) { data, res, err in
                     if let err = err {
-                        reject(err)
+                        resolver.reject(err)
                         return
                     }
 
                     guard let responseContent = data,
                           self.checkResult(result: res!) == .noError else {
-                        reject(HTTPError.invalidRequest)
+                        resolver.reject(HTTPError.invalidRequest)
                         return
                     }
 
@@ -224,7 +227,7 @@ class SendMailViewController: UIViewController {
                         let resultJson = try JSONSerialization.jsonObject(with: responseContent,
                                                                           options: [])
                         let sharingLink = (OneDriveFileLink(json: resultJson as? [String: AnyObject] ?? [:])?.webUrl)!
-                        fulfill((image, sharingLink))
+                        resolver.fulfill((image, sharingLink))
                     } catch let error as NSError {
                         print(error)
                     }
@@ -366,13 +369,13 @@ class SendMailViewController: UIViewController {
         default:
             let request = self.buildRequest(operation: operation, resource: resource, withBody: content)
 
-            sendRequest = Promise<Data> { fulfill, reject in
+            sendRequest = Promise<Data> { resolver in
                 URLSession.shared.dataTask(with: request) { data, res, err in
                     if let err = err {
                         self.updateUI(showActivityIndicator: false,
                                       statusText: "Error assembling the mail content. " + err.localizedDescription,
                                       sendMail: false)
-                        reject(err)
+                        resolver.reject(err)
                         return
                     }
 
@@ -381,11 +384,11 @@ class SendMailViewController: UIViewController {
                         self.updateUI(showActivityIndicator: false,
                                       statusText: "",
                                       sendMail: true)
-                        fulfill(data!)
+                        resolver.fulfill(data!)
                     default:
                         self.updateUI(showActivityIndicator: false,
                                       statusText: "Error sending the mail.", sendMail: false)
-                        reject(HTTPError.invalidRequest)
+                        resolver.reject(HTTPError.invalidRequest)
                     }
                 }.resume()
             }
@@ -423,10 +426,10 @@ class SendMailViewController: UIViewController {
      */
     func sendGETMessage(resource: String) -> Promise<Data> {
         let request = self.buildRequest(operation: "GET", resource: resource)
-        return Promise { fulfill, reject in
+        return Promise { resolver in
             URLSession.shared.dataTask(with: request) { data, response, error in
                 if let error = error {
-                    reject(error)
+                    resolver.reject(error)
                     self.updateUI(showActivityIndicator: false, statusText: self.failureString, sendMail: false)
                     return
                 }
@@ -436,12 +439,12 @@ class SendMailViewController: UIViewController {
                 switch statusCode {
                 case 200...299:
                     self.updateUI(showActivityIndicator: false, statusText: self.successString, sendMail: true)
-                    fulfill(data!)
+                    resolver.fulfill(data!)
                 default:
                     print("response: \(response!)")
                     print(String(data: data!, encoding: String.Encoding.utf8) as Any )
                     self.updateUI(showActivityIndicator: false, statusText: self.failureString, sendMail: false)
-                    reject(error ?? HTTPError.invalidRequest)
+                    resolver.reject(error ?? HTTPError.invalidRequest)
                 }
             }.resume()
         }
@@ -454,7 +457,7 @@ class SendMailViewController: UIViewController {
      True if the user is authenticated and an access token is returned.
      */
     func connectToGraph() -> Promise<String> {
-        return Promise { resolve, reject in
+        return Promise { resolver in
             // Acquire an access token. If logged in already, this shouldn't bring up an authentication window.
             // However, if the token is expired, user will be asked to sign in again.
             AuthenticationClass.sharedInstance
@@ -473,10 +476,10 @@ class SendMailViewController: UIViewController {
 
                     self.present(alertController, animated: true, completion: nil)
 
-                    reject(error)
+                    resolver.reject(error)
                 }
 
-                resolve(accessToken)
+                resolver.fulfill(accessToken)
             }
         }
     }
