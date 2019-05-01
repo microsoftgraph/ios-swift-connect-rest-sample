@@ -382,7 +382,7 @@ class SendMailViewController: UIViewController {
                     switch self.checkResult(result: res!) {
                     case .noError:
                         self.updateUI(showActivityIndicator: false,
-                                      statusText: "",
+                                      statusText: "Email Sent!",
                                       sendMail: true)
                         resolver.fulfill(data!)
                     default:
