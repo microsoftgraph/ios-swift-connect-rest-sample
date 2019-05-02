@@ -58,12 +58,6 @@ class AuthenticationClass {
             // We check to see if we have a current logged in user. If we don't, then we need to sign someone in.
             // We throw an interactionRequired so that we trigger the interactive signin.
 
-            guard !(try authenticationProvider.allAccounts().isEmpty) else {
-                throw NSError.init(domain: "MSALErrorDomain",
-                                   code: MSALError.interactionRequired.rawValue,
-                                   userInfo: nil)
-            }
-
             // Acquire a token for an existing user silently
             guard let account = try authenticationProvider.allAccounts().first else {
                 throw NSError.init(domain: "MSALErrorDomain",
