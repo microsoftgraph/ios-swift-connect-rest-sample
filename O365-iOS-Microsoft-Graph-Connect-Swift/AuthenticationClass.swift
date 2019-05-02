@@ -10,7 +10,7 @@ class AuthenticationClass {
     // Singleton class
     static let sharedInstance = AuthenticationClass()
 
-    var authenticationProvider = MSALPublicClientApplication.init()
+    var authenticationProvider = MSALPublicClientApplication()
     var accessToken: String = ""
     var lastInitError: String?
     
@@ -30,15 +30,15 @@ class AuthenticationClass {
             }
 
             let kClientId = String(redirectUrl[msalRange.upperBound...])
-            let authority = try MSALAADAuthority.init(url: URL(string:ApplicationConstants.kAuthority)!)
+            let authority = try MSALAADAuthority(url: URL(string:ApplicationConstants.kAuthority)!)
             
             // Redirect uri will be constucted automatically in the form of "msal<your-client-id-here>://auth" if not provided.
-            let pcaConfig = MSALPublicClientApplicationConfig.init(clientId: kClientId, redirectUri: nil, authority: authority)
-            authenticationProvider = try MSALPublicClientApplication.init(configuration: pcaConfig)
+            let pcaConfig = MSALPublicClientApplicationConfig(clientId: kClientId, redirectUri: nil, authority: authority)
+            authenticationProvider = try MSALPublicClientApplication(configuration: pcaConfig)
 
         } catch let error as NSError {
             self.lastInitError = error.userInfo.description
-            authenticationProvider = MSALPublicClientApplication.init()
+            authenticationProvider = MSALPublicClientApplication()
         }
     }
 
@@ -53,7 +53,7 @@ class AuthenticationClass {
                                                _ accessToken: String) -> Void) {
         do {
             if let initError = self.lastInitError {
-                throw NSError.init(domain: initError, code: 0, userInfo: nil)
+                throw NSError(domain: initError, code: 0, userInfo: nil)
             }
 
             // We check to see if we have a current logged in user. If we don't, then we need to sign someone in.
@@ -61,13 +61,13 @@ class AuthenticationClass {
 
             // Acquire a token for an existing user silently
             guard let account = try authenticationProvider.allAccounts().first else {
-                throw NSError.init(domain: "MSALErrorDomain",
+                throw NSError(domain: "MSALErrorDomain",
                                    code: MSALError.interactionRequired.rawValue,
                                    userInfo: nil)
             }
             
-            let parameters = MSALSilentTokenParameters.init(scopes: scopes, account:account)
-            let authority = try MSALAADAuthority.init(url: URL(string:ApplicationConstants.kAuthority)!)
+            let parameters = MSALSilentTokenParameters(scopes: scopes, account:account)
+            let authority = try MSALAADAuthority(url: URL(string:ApplicationConstants.kAuthority)!)
             parameters.authority = authority
             authenticationProvider.acquireTokenSilent(with: parameters) { result, error in
                 // Could not acquire token silently
@@ -85,7 +85,7 @@ class AuthenticationClass {
             // among other possible reasons.
             switch (error as NSError).code {
             case MSALError.interactionRequired.rawValue:
-                let parameters = MSALInteractiveTokenParameters.init(scopes: scopes)
+                let parameters = MSALInteractiveTokenParameters(scopes: scopes)
                 authenticationProvider.acquireToken(with: parameters) { result, error in
                     guard let accessToken = result?.accessToken else {
                         completion(ApplicationConstants.MSGraphError.nsErrorType(error: error! as NSError), "")
