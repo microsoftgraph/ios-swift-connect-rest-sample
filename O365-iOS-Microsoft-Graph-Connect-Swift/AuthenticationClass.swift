@@ -32,6 +32,7 @@ class AuthenticationClass {
             let kClientId = String(redirectUrl[msalRange.upperBound...])
             let authority = try MSALAADAuthority.init(url: URL(string:ApplicationConstants.kAuthority)!)
             
+            // Redirect uri will be constucted automatically in the form of "msal<your-client-id-here>://auth" if not provided.
             let pcaConfig = MSALPublicClientApplicationConfig.init(clientId: kClientId, redirectUri: nil, authority: authority)
             authenticationProvider = try MSALPublicClientApplication.init(configuration: pcaConfig)
 
@@ -84,7 +85,8 @@ class AuthenticationClass {
             // among other possible reasons.
             switch (error as NSError).code {
             case MSALError.interactionRequired.rawValue:
-                authenticationProvider.acquireToken(forScopes: scopes) { result, error in
+                let parameters = MSALInteractiveTokenParameters.init(scopes: scopes)
+                authenticationProvider.acquireToken(with: parameters) { result, error in
                     guard let accessToken = result?.accessToken else {
                         completion(ApplicationConstants.MSGraphError.nsErrorType(error: error! as NSError), "")
                         return
