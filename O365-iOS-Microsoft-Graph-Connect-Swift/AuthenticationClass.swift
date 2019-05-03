@@ -10,7 +10,7 @@ class AuthenticationClass {
     // Singleton class
     static let sharedInstance = AuthenticationClass()
 
-    var authenticationProvider = MSALPublicClientApplication()
+    var authenticationProvider: MSALPublicClientApplication!
     var accessToken: String = ""
     var lastInitError: String?
     
@@ -104,11 +104,9 @@ class AuthenticationClass {
 
     func disconnect() {
         let accounts = try? authenticationProvider.allAccounts()
-        guard accounts != nil && !(accounts!.isEmpty) else {
-            return
-        }
-
-        try? authenticationProvider.remove(accounts![0])
+        guard let account = accounts?.first else { return }
+        
+        try? authenticationProvider.remove(account)
     }
     
     // Get client id from bundle
