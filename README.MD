@@ -3,7 +3,7 @@
 Connecting to Microsoft Office 365 is the first step every iOS app must take to start working with Office 365 services and data. This sample shows how to connect and then call one API through Microsoft Graph.
 
 > Note: For the Objective-C version of this sample, see [O365-iOS-Microsoft-Graph-Connect](https://github.com/microsoftgraph/ios-objectivec-connect-rest-sample). 
- 
+
 ## Prerequisites
 * [Xcode](https://developer.apple.com/xcode/downloads/) version 8.2.1 from Apple
 * An Office 365 account. You can sign up for [an Office 365 Developer subscription](https://aka.ms/devprogramsignup) that includes the resources that you need to start building Office 365 apps.
@@ -20,7 +20,7 @@ This sample demonstrates several REST calls to the Microsoft Graph REST endpoint
 - PUT request to [upload the profile photo to the user's OneDrive root folder](https://developer.microsoft.com/en-us/graph/docs/api-reference/v1.0/api/driveitem_put_content) 
 - POST a request to OneDrive to [create a sharing link for a drive item](https://developer.microsoft.com/en-us/graph/docs/api-reference/v1.0/api/driveitem_createlink) to give other user's access to the uploaded photo
 - POSTS a request to [send a mail message](https://developer.microsoft.com/en-us/graph/docs/api-reference/v1.0/api/user_sendmail) with a photo attachment
-       
+  ​     
 ## Running this sample in Xcode
 
 1. Clone this repository
@@ -31,32 +31,55 @@ This sample demonstrates several REST calls to the Microsoft Graph REST endpoint
 The preview version of MSAL is distributed as source code using Carthage. To build the source code, do these steps:
 
 1. Open the Bash terminal and go to the app root folder.
-2. Create a **cartfile**: Copy `echo "github \"AzureAD/microsoft-authentication-library-for-objc\" == 0.1.3" > Cartfile`  into the terminal and run the command.
+2. Create a **cartfile**: Copy `echo "github \"AzureAD/microsoft-authentication-library-for-objc\" == 0.4.0" > Cartfile`  into the terminal and run the command.
 3. Build the MSAL library: Copy `carthage update` into the terminal and run the command.        
 
 ### Update the sample with your client id
 
 1. Open **O365-iOS-Microsoft-Graph-Connect-Swift.xcworkspace**
-3. Open **Info.plist** as source code and update the client id:
+
+2. Open **AuthenticationConstants.swift** to update the redirect uri and client id:
+
+   ```objective-c
+   /*
+        To enable brokered auth, redirect uri must be in the form of "msauth.<your-bundle-id-here>://auth".
+        The redirect uri needs to be registered for your app in Azure Portal
+        */
+       static let kRedirectUri = "msauth.com.microsoft.O365-iOS-Microsoft-Graph-Connect-Swift-REST://auth"
+           
+       // Put your client id here
+       static let kClientId = "<your-client-id>"
+   ```
+> **Note:** The redirect uri and client id need to be exactly as they exist in the Azure Portal app registration.
+> <br/>
+
+3. Open **Info.plist** as source code and register the scheme part of your redirect uri in step 2 by putting it under `CFBundleURLSchemes`.
 
    ```xml
-       <key>CFBundleURLTypes</key>
-    <array>
-        <dict>
-            <key>CFBundleTypeRole</key>
-            <string>Editor</string>
-            <key>CFBundleURLName</key>
-            <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-            <key>CFBundleURLSchemes</key>
-            <array>
-                <string>msalENTER_CLIENT_ID_HERE</string>
-            </array>
-        </dict>
-    </array>
-
+   <key>CFBundleURLTypes</key>
+   <array>
+   	<dict>
+   		<key>CFBundleTypeRole</key>
+   		<string>Editor</string>
+   		<key>CFBundleURLName</key>
+   		<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+   		<key>CFBundleURLSchemes</key>
+   		<array>
+   			<string>msauth.com.microsoft.O365-iOS-Microsoft-Graph-Connect-Swift-REST</string>
+   		</array>
+   	</dict>
+   </array>
    ```
-> **Note:** If the "ENTER\_CLIENT\_ID_HERE" string in `CFBundleURLSchemes` array element 1 is not copied exactly as it exists in the Azure Portal app registration, the authentication redirect url is formed incorrectly. User authentication results are sent to http://localhost insted of the correct redirect url. Safari cannot connect to http://localhost on an iOS device. 
-<br/>For example, `msal 3700a5ef-cee9-498e-a7e3-cbf701966331` includes a space between `msal` and the client id. This value forms an invalid redirect url.
+
+4. Open **Info.plist** as source code and add the following to enable broker detection:
+
+```xml
+<key>LSApplicationQueriesSchemes</key>
+<array>
+	<string>msauthv2</string>
+	<string>msauth</string>
+</array>
+```
 
 4. Run the sample.
 
