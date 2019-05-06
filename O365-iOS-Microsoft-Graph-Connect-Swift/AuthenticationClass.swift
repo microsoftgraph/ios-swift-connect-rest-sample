@@ -12,33 +12,17 @@ class AuthenticationClass {
 
     var authenticationProvider: MSALPublicClientApplication!
     var accessToken: String = ""
-    var lastInitError: String?
+    var lastInitError: Error?
     
     init () {
         do {
-            // Get the MSAL client Id for this Azure app registration. We store it in the main bundle
-            guard let path = Bundle.main.path(forResource: "Info", ofType: "plist"),
-                  let dict = NSDictionary(contentsOfFile: path),
-                  let urlTypes = dict.object(forKey: "CFBundleURLTypes") as? NSArray else {
-                fatalError("Can't find MSAL Client ID in your Info.plist")
-            }
-
-            let redirectUrl = getRedirectUrlFromMSALArray(array: urlTypes)
-
-            guard let msalRange = redirectUrl.range(of: "msal") else {
-                fatalError("Invalid Redirect URL")
-            }
-
-            let kClientId = String(redirectUrl[msalRange.upperBound...])
             let authority = try MSALAADAuthority(url: URL(string:ApplicationConstants.kAuthority)!)
             
-            // Redirect uri will be constucted automatically in the form of "msal<your-client-id-here>://auth" if not provided.
-            let pcaConfig = MSALPublicClientApplicationConfig(clientId: kClientId, redirectUri: nil, authority: authority)
+            let pcaConfig = MSALPublicClientApplicationConfig(clientId: ApplicationConstants.kClientId, redirectUri: ApplicationConstants.kRedirectUri, authority: authority)
             authenticationProvider = try MSALPublicClientApplication(configuration: pcaConfig)
 
         } catch let error as NSError {
-            self.lastInitError = error.userInfo.description
-            authenticationProvider = MSALPublicClientApplication()
+            self.lastInitError = error
         }
     }
 
@@ -53,7 +37,7 @@ class AuthenticationClass {
                                                _ accessToken: String) -> Void) {
         do {
             if let initError = self.lastInitError {
-                throw NSError(domain: initError, code: 0, userInfo: nil)
+                throw initError
             }
 
             // We check to see if we have a current logged in user. If we don't, then we need to sign someone in.
@@ -107,16 +91,5 @@ class AuthenticationClass {
         guard let account = accounts?.first else { return }
         
         try? authenticationProvider.remove(account)
-    }
-    
-    // Get client id from bundle
-    func getRedirectUrlFromMSALArray(array: NSArray) -> String {
-        guard let arrayElement = array.object(at: 0) as? NSDictionary,
-              let redirectArray = arrayElement.value(forKeyPath: "CFBundleURLSchemes") as? NSArray,
-              let subString = redirectArray.object(at: 0) as? String else {
-            return ""
-        }
-
-        return subString
     }
 }
