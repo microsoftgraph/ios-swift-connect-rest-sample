@@ -70,8 +70,13 @@ class SendMailViewController: UIViewController {
 
         // Get user state values before creating mail message to be sent
         do {
-            self.userName = try AuthenticationClass.sharedInstance.authenticationProvider.users()[0].name!
-            self.emailTextField.text = try AuthenticationClass.sharedInstance.authenticationProvider.users()[0].displayableId
+            let accounts = try AuthenticationClass.sharedInstance.authenticationProvider.allAccounts()
+            guard !(accounts.isEmpty) else {
+                return self.updateUI(showActivityIndicator: false, statusText: "Failed to read accounts from cache!", sendMail: false)
+            }
+            
+            self.userName = accounts[0].username!
+            self.emailTextField.text = accounts[0].username!
             self.userEmailAddress = self.emailTextField.text
             self.headerLabel.text = "Hi, \(self.userName!)"
 
@@ -382,7 +387,7 @@ class SendMailViewController: UIViewController {
                     switch self.checkResult(result: res!) {
                     case .noError:
                         self.updateUI(showActivityIndicator: false,
-                                      statusText: "",
+                                      statusText: "Email Sent!",
                                       sendMail: true)
                         resolver.fulfill(data!)
                     default:
