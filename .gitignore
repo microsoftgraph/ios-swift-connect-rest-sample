@@ -68,3 +68,7 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Carthage
+Carthage/Checkouts
+Carthage/Build
